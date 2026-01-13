@@ -53,7 +53,7 @@ git init
 
 - 创建 .gitignore 文件
 ```plaintext
-/node_modules
+*/node_modules
 ```
 
 - 关联远程仓库
