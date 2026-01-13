@@ -1,0 +1,82 @@
+# Cedar 后端管理系统文档
+## 一、系统的创建
+### 1.核心技术栈：
+- 页面基础：HTML + CSS + JavaScript
+- 框架核心：Vue3
+- 构建工具：Vite
+- 路由管理：VueRouter4
+- 状态管理：Pinia
+- 网络请求：Axios
+- 版本控制：Git
+- 样式预处理：Sass
+
+### 2.项目创建
+- 初始化项目 Vue3 项目
+```bash
+npm create vite@latest cedar-front-end -- --template vue
+```
+
+- 项目结构
+```plaintext
+cedar/
+├── node_modules/        # 项目依赖包目录
+├── public/              # 静态资源目录（不经过Vite构建）
+├── src/                 # 业务代码核心目录（开发重点关注）
+│   ├── assets/          # 可被Vite构建处理的静态资源
+│   ├── components/      # 通用/业务组件目录
+│   ├── App.vue          # 项目根组件
+│   ├── main.js          # 项目入口文件
+├── index.html           # Vite构建入口HTML文件
+├── package-lock.json    # 依赖版本锁定文件
+├── package.json         # 项目核心配置文件
+├── README.md            # 项目说明文档
+└── vite.config.js       # Vite构建配置文件
+```
+
+- 安装依赖
+```bash
+cd cedar-front-end
+npm install vue-router@4 pinia axios 
+npm install -D sass 
+```
+
+- 启动项目
+```bash
+npm run dev
+```
+
+### 3. 引入Git进行管理
+- 初始化仓库
+```bash
+git init
+```
+
+- 创建 .gitignore 文件
+```plaintext
+/node_modules
+```
+
+- 关联远程仓库
+```bash
+git remote add origin <仓库地址>
+git add .
+git commit -m "初始化仓库"
+git push -u origin master
+```
+
+### 4. 配置相对路径
+- 配置 vite.config.js
+```typescript
+import path from 'path';
+
+export default defineConfig({
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src')
+    }
+  }
+})
+```
+
+### 5. 封装Axios
+- 在 src/utils/request.js 中
