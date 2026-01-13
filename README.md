@@ -18,7 +18,7 @@ npm create vite@latest cedar-front-end -- --template vue
 
 - 项目结构
 ```plaintext
-cedar/
+cedar-front-end/
 ├── node_modules/        # 项目依赖包目录
 ├── public/              # 静态资源目录（不经过Vite构建）
 ├── src/                 # 业务代码核心目录（开发重点关注）
