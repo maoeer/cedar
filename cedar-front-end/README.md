@@ -126,3 +126,50 @@ service.interceptors.response.use(
 
 export default service;
 ```
+
+6. 配置路由
+- 创建组件 src/views/login/index.vue 和 src/views/home/index.vue
+
+- 编写路由配置 src/router/index.js，使用 Hash 模式
+```javascript
+import { createRouter, createWebHashHistory } from 'vue-router';
+import Login from '@/views/login/index.vue';
+import Home from '@/views/home/index.vue';
+
+const routes = [
+  { path: '/', redirect: '/home' },
+  { path: '/login', component: Login },
+  { path: '/home', component: Home }
+];
+
+const router = createRouter({
+  history: createWebHashHistory(),
+  routes
+});
+
+// 全局前置守卫
+router.beforeEach((to, from, next) => {
+  next();
+});
+
+export default router;
+export { router };
+```
+
+- 挂载路由
+```javascript
+import router from './router';
+
+const app = createApp(App);
+app.use(router);
+app.mount('#app');
+```
+
+- 添加路由挂载点
+```vue
+<template>
+  <div id="app">
+    <router-view></router-view>
+  </div>
+</template>
+```
