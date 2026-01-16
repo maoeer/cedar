@@ -153,10 +153,9 @@ router.beforeEach((to, from, next) => {
 });
 
 export default router;
-export { router };
 ```
 
-- 挂载路由
+- 挂载路由，在 src/main.js 中
 ```javascript
 import router from './router';
 
@@ -165,11 +164,12 @@ app.use(router);
 app.mount('#app');
 ```
 
-- 添加路由挂载点
+- 添加路由挂载点，在 src/App.vue 中
 ```vue
 <template>
-  <div id="app">
+  <div>
     <router-view></router-view>
   </div>
 </template>
 ```
+
