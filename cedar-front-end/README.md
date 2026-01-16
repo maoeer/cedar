@@ -127,7 +127,7 @@ service.interceptors.response.use(
 export default service;
 ```
 
-6. 配置路由
+###6. 配置路由
 - 创建组件 src/views/login/index.vue 和 src/views/home/index.vue
 
 - 编写路由配置 src/router/index.js，使用 Hash 模式
