@@ -173,3 +173,22 @@ app.mount('#app');
 </template>
 ```
 
+### 7. 配置 Pinia
+- 创建文件 src/stores/user.js
+
+- 编写用户仓库
+```javascript
+import { defineStore } from 'pinia';
+
+// setup 风格
+export const useUserStore = defineStore('user', () => {
+  return {};
+});
+```
+
+- 挂载 Pinia，在 src/main.js 中
+```javascript
+import { createPinia } from 'pinia';
+
+app.use(pinia);
+```
