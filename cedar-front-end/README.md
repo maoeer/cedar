@@ -192,3 +192,36 @@ import { createPinia } from 'pinia';
 
 app.use(pinia);
 ```
+
+### 8. 全局样式
+- 创建 src/assets/styles/index.scss 
+
+- 清除浏览器默认样式
+```scss
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: sans-serif;
+  font-size: 14px;
+  color: #333;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+ul {
+  list-style: none;
+}
+
+button {
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+```
