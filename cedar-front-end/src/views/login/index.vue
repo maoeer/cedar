@@ -48,14 +48,31 @@
   width: 460px;
   max-width: 100%;
   display: grid;
+  position: relative;
+  background: #fff;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  z-index: 1;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 180px;
+    background: linear-gradient(135deg, $primary-color);
+    clip-path: ellipse(100% 65% at 50% 0);
+    z-index: -1;
+  }
 
   header {
     text-align: center;
+    color: #fff;
     padding: 40px;
   }
 
   main {
-    padding: 0 40px;
+    padding: 0 40px 40px;
   }
 }
 

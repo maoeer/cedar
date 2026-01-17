@@ -228,14 +228,14 @@ button {
 ```
 
 - 在 src/main.js 中，引入
-```js
+```javascript
 import '@/assets/styles/index.scss';
 ```
 
 - 创建全局样式变量文件，src/assets/styles/variables.scss
 
 - vite 全局引入，在 vite.config.js 中
-```js
+```javascript
 export default defineConfig({
   css: {
     preprocessorOptions: {
@@ -245,4 +245,11 @@ export default defineConfig({
     }
   }
 });
+```
+
+## 二、页面开发
+### 1. login 页面
+- 页面布局
+```vue
+
 ```
