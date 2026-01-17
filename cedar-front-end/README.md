@@ -70,6 +70,7 @@ git push -u origin master
 import path from 'path';
 
 export default defineConfig({
+  base: './',
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src')
@@ -194,9 +195,9 @@ app.use(pinia);
 ```
 
 ### 8. 全局样式
-- 创建 src/assets/styles/index.scss 
+- 创建全局样式文件 src/assets/styles/index.scss 
 
-- 清除浏览器默认样式
+- 编写全局样式
 ```scss
 * {
   margin: 0;
@@ -224,4 +225,24 @@ button {
   outline: none;
   cursor: pointer;
 }
+```
+
+- 在 src/main.js 中，引入
+```js
+import '@/assets/styles/index.scss';
+```
+
+- 创建全局样式变量文件，src/assets/styles/variables.scss
+
+- vite 全局引入，在 vite.config.js 中
+```js
+export default defineConfig({
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: '@use "@/assets/styles/variables" as *;'
+      }
+    }
+  }
+});
 ```
