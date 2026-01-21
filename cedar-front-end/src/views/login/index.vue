@@ -10,6 +10,7 @@
         <h1>欢迎回来</h1>
         <p>使用验证码登录您的账户</p>
       </header>
+      
       <main>
         <form class="form">
           <div class="form-item">
