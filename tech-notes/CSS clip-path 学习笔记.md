@@ -211,4 +211,3 @@ img {
 clip-path 是 CSS 中非常实用的“视觉裁剪工具”，核心优势是**简洁、灵活、可动画**，无需额外元素即可实现不规则形状。
 
 日常使用优先级：基本形状（inset/circle/ellipse/polygon）→ 自定义路径（path()）；配合 transition/animation 可实现更丰富的视觉效果，是前端样式优化的常用工具。
-> （注：文档部分内容可能由 AI 生成）
