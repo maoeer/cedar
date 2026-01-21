@@ -1,5 +1,6 @@
 # 前端待办:
 1. 404页面路由
+2. 登录注册页面（LoginRegisterPage）划分登录表单组件（LoginForm）和注册表单组件（RegisterForm）
 
 # 后端待办:
 1. 创建后端文件夹 cedar-back-end
