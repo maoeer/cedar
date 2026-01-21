@@ -11,8 +11,9 @@ clip-path 是 CSS 中用于**裁剪元素可视区域**的属性，它可以指�
 ## 二、基本语法
 
 clip-path 的语法核心是“指定裁剪路径/形状”，属性值分为三大类：基本形状、自定义路径、关键字，通用语法如下：
-
-> clip-path: <clip-source> | <basic-shape> | <geometry-box> | none;
+```css
+clip-path: <clip-source> | <basic-shape> | <geometry-box> | none;
+```
 
 ```css
 
