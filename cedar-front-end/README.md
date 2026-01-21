@@ -251,5 +251,34 @@ export default defineConfig({
 ### 1. login 页面
 - 页面布局
 ```vue
+<template>
+  <div class="container">
+    <div class="login-card">
+      <header>
+        <div class="logo"></div>
+        <h1>欢迎回来</h1>
+        <p>使用验证码登录您的账户</p>
+      </header>
 
+      <main>
+        <form class="form">
+          <div class="form-item">
+            <label for="email">邮箱:</label>
+            <input type="text" placeholder="请输入邮箱" id="email" name="email">
+          </div>
+          
+          <div class="form-item">
+            <label for="captcha">验证码:</label>
+            <div class="form-item-captcha">
+              <input type="text" placeholder="请输入验证码" id="captcha" name="captcha">
+              <button>获取验证码</button>
+            </div>
+          </div>
+
+          <button class="login-btn">登录</button>
+        </form>
+      </main>
+    </div>
+  </div>
+</template>
 ```
