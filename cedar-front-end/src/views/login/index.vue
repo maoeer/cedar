@@ -1,8 +1,11 @@
 <script setup>
 import { getCurrentInstance } from 'vue';
+
+// 获取 vue 实例
 const {proxy} = getCurrentInstance();
-const handleToast = () => {
-  proxy.$toast('全局信息');
+// 发送验证码
+const sendCaptcha = () => {
+  proxy.$toast('成功发送验证码');
 }
 </script>
 
@@ -14,10 +17,7 @@ const handleToast = () => {
         <h1>欢迎回来</h1>
         <p>使用验证码登录您的账户</p>
       </header>
-        <div>
-    <button @click="handleToast">全部调用Toast</button>
-  </div>
-
+    
       <main>
         <form class="form">
           <div class="form-item">
@@ -29,7 +29,7 @@ const handleToast = () => {
             <label for="captcha">验证码:</label>
             <div class="form-item-captcha">
               <input type="text" placeholder="请输入验证码" id="captcha" name="captcha">
-              <button>获取验证码</button>
+              <button @click="sendCaptcha">获取验证码</button>
             </div>
           </div>
 

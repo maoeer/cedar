@@ -19,7 +19,7 @@ const openToast = (msg) => {
   // 超过3条删除最旧的
   if (toastList.value.length > 3) {
     // 先删除最旧 Toast 的定时器
-    const oldToast = toastList.value.shift();
+    toastList.value.shift();
   }
 };
 
@@ -29,10 +29,9 @@ const handleAnimationEnd = (toastId) => {
 };
 
 
-// 卸载时清理定时器
+// 卸载时清理 Toast 列表
 onUnmounted(() => {
-  timers.forEach(timer => clearTimeout(timer));
-  timers.clear();
+  toastList.value = [];
 });
 
 // 暴露方法给外部调用
@@ -44,9 +43,9 @@ defineExpose({
 <template>
   <!-- Toast容器: 固定右上角 -->
   <div class="toast-container">
-    <!-- 循环渲染 Toast 列表: 每条 Toast 垂直偏移 60px (50px高度 + 10px 间距) -->
+    <!-- 循环渲染 Toast 列表 -->
     <div
-      v-for="(toast, index) in toastList"
+      v-for="toast in toastList"
       :key="toast.id"
       class="toast-item">
       
