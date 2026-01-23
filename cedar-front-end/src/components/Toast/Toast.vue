@@ -1,20 +1,17 @@
 <script setup>
-import { ref, onUnmounted, nextTick } from 'vue';
+import { ref, onUnmounted } from 'vue';
 
 // 维护 Toast 列表，每个 Toast 有唯一ID、文本、进度
 const toastList = ref([]);
 // 自增ID：确保每个 toast 有唯一ID
 let toastId = 0;
-// 定时器变量
-let timers = new Map();
 
 // 对外暴露的方法：触发 Toast 显示
 const openToast = (msg) => {
   // 创建新 Toast 对象
   const newToast = {
     id: ++toastId,
-    message: msg,
-    progress: 100
+    message: msg
   };
 
   // 添加新 Toast 到列表
@@ -23,26 +20,14 @@ const openToast = (msg) => {
   if (toastList.value.length > 3) {
     // 先删除最旧 Toast 的定时器
     const oldToast = toastList.value.shift();
-    if (timers.has(oldToast.id)) {
-      clearTimeout(timers.get(oldToast.id));
-      timers.delete(oldToast.id);
-    }
   }
-
-  // 触发 Toast 的进度条动画 (100% -> 0%)
-  setTimeout(() => {
-    newToast.progress = 0;
-  }, 0);
-
-  // 3 秒后移除当前 Toast
-  const timer = setTimeout(() => {
-    toastList.value = toastList.value.filter(item => item.id !== newToast.id);
-    timers.delete(newToast.id);
-  }, 3000); 
-  
-  // 配置完成，将定时器添加到 Map 中
-  timers.set(newToast.id, timer);
 };
+
+// 动画结束后移除对应 Toast
+const handleAnimationEnd = (toastId) => {
+  toastList.value = toastList.value.filter(item => item.id !== toastId);
+};
+
 
 // 卸载时清理定时器
 onUnmounted(() => {
@@ -63,8 +48,7 @@ defineExpose({
     <div
       v-for="(toast, index) in toastList"
       :key="toast.id"
-      class="toast-item"
-      :style="{ top: `${index * 60}px` }">
+      class="toast-item">
       
       <!-- 提示内容 -->
       <div class="toast-content">{{ toast.message }}</div>
@@ -72,7 +56,7 @@ defineExpose({
       <!-- 进度条 -->
       <div
         class="toast-progress"
-        :style="{ width: `${toast.progress}%`, transition: `width 3000ms linear` }">
+        @animationend="handleAnimationEnd(toast.id)">
       </div>
     </div>
   </div>
@@ -87,7 +71,7 @@ defineExpose({
   z-index: 999;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 // 单个 Toast 样式
@@ -118,5 +102,18 @@ defineExpose({
   left: 0;
   height: 3px;
   background: #409eff;
+  width: 100%;
+  animation: toastProgress 3s linear forwards;
+}
+
+// 定义进度条动画
+@keyframes toastProgress {
+  0% {
+    width: 100%;
+  }
+
+  100% {
+    width: 0%;
+  }
 }
 </style>

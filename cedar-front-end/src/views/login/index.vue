@@ -7,8 +7,6 @@ const handleToast = () => {
 </script>
 
 <template>
-
-
   <div class="container">
     <div class="login-card">
       <header>
