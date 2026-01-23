@@ -1,8 +1,14 @@
 <script setup>
-
+import { getCurrentInstance } from 'vue';
+const {proxy} = getCurrentInstance();
+const handleToast = () => {
+  proxy.$toast('全局信息');
+}
 </script>
 
 <template>
+
+
   <div class="container">
     <div class="login-card">
       <header>
@@ -10,7 +16,10 @@
         <h1>欢迎回来</h1>
         <p>使用验证码登录您的账户</p>
       </header>
-      
+        <div>
+    <button @click="handleToast">全部调用Toast</button>
+  </div>
+
       <main>
         <form class="form">
           <div class="form-item">

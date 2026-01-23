@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onUnmounted } from 'vue';
+import { ref, onUnmounted, nextTick } from 'vue';
 
 // 维护 Toast 列表，每个 Toast 有唯一ID、文本、进度
 const toastList = ref([]);
@@ -29,7 +29,7 @@ const openToast = (msg) => {
     }
   }
 
-  // 触发新 Toast 的进度条动画 (100% -> 0%)
+  // 触发 Toast 的进度条动画 (100% -> 0%)
   setTimeout(() => {
     newToast.progress = 0;
   }, 0);
@@ -39,6 +39,8 @@ const openToast = (msg) => {
     toastList.value = toastList.value.filter(item => item.id !== newToast.id);
     timers.delete(newToast.id);
   }, 3000); 
+  
+  // 配置完成，将定时器添加到 Map 中
   timers.set(newToast.id, timer);
 };
 
@@ -48,6 +50,7 @@ onUnmounted(() => {
   timers.clear();
 });
 
+// 暴露方法给外部调用
 defineExpose({
   openToast
 });
@@ -115,7 +118,5 @@ defineExpose({
   left: 0;
   height: 3px;
   background: #409eff;
-  width: 100%;
-  transition: width 3s linear;
 }
 </style>
