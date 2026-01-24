@@ -1,4 +1,4 @@
-# animationend 事件完全解析：原生 DOM + Vue 实战
+# Vue animationend 事件解析：原生 DOM + Vue 实战
 
 ## 一、浏览器原生 animationend 事件
 
