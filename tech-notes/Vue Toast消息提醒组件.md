@@ -3,31 +3,20 @@
 ## 一、需求背景
 
 开发 Vue 项目中的 Toast 提示组件，核心要求：
-
 1. 显示位置：页面右上角；
-
 2. 显示时长：每条 Toast 展示 3 秒后自动消失；
-
-3. 视觉效果：顶部/底部带剩余时间进度条；
-
+3. 视觉效果：底部带剩余时间进度条；
 4. 数量控制：最多同时显示 3 条，新 Toast 触发时替换最旧的 Toast；
-
 5. 稳定性：无动画失效、定时器时序冲突、内存泄漏等问题。
 
 ## 二、核心设计思路
-
 ### CSS 原生动画 + 事件驱动
-
 - 进度条动画：用 CSS `@keyframes` 原生实现 100% → 0% 的线性进度变化，摆脱 JS 数值控制；
-
 - 自动移除：通过 `animationend` 事件（动画结束）触发 Toast 移除，替代定时器；
-
 - 数量控制：仅维护 Toast 列表，超过 3 条时删除最旧项，状态极简。
 
 ## 三、完整实现代码
-
 ### 1. Toast 组件文件（src/components/Toast/Toast.vue）
-
 ```vue
 <script setup>
 import { ref, onUnmounted } from 'vue';
@@ -190,7 +179,6 @@ export default {
 ```
 
 ### 3. 入口文件注册（src/main.js）
-
 ```javascript
 import { createApp } from 'vue';
 import App from './App.vue';
