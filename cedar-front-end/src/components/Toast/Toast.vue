@@ -1,33 +1,43 @@
 <script setup>
 import { ref, onUnmounted } from 'vue';
 
-// 维护 Toast 列表，每个 Toast 有唯一ID、文本、进度
-const toastList = ref([]);
-// 自增ID：确保每个 toast 有唯一ID
-let toastId = 0;
+// 闭包管理
+const createToastManager = () => {
+  // 维护 Toast 列表，每个 Toast 有唯一ID、文本
+  const toastList = ref([]);
+  // 自增ID：确保每个 toast 有唯一ID
+  let toastId = 0;
 
-// 对外暴露的方法：触发 Toast 显示
-const openToast = (msg) => {
-  // 创建新 Toast 对象
-  const newToast = {
-    id: ++toastId,
-    message: msg
+  // 触发 Toast 显示
+  const openToast = (msg) => {
+    // 创建新 Toast 对象
+    const newToast = {
+      id: ++toastId,
+      message: msg
+    };
+
+    // 添加新 Toast 到列表
+    toastList.value.push(newToast);
+    // 超过3条删除最旧的
+    if (toastList.value.length > 3) {
+      // 先删除最旧 Toast 的定时器
+      toastList.value.shift();
+    }
   };
 
-  // 添加新 Toast 到列表
-  toastList.value.push(newToast);
-  // 超过3条删除最旧的
-  if (toastList.value.length > 3) {
-    // 先删除最旧 Toast 的定时器
-    toastList.value.shift();
-  }
-};
+  // 动画结束移除对应 Toast（需访问 toastList，故放入闭包）
+  const handleAnimationEnd = (toastId) => {
+    toastList.value = toastList.value.filter(item => item.id !== toastId);
+  };
 
-// 动画结束后移除对应 Toast
-const handleAnimationEnd = (toastId) => {
-  toastList.value = toastList.value.filter(item => item.id !== toastId);
+  return {
+    toastList,       
+    openToast,       
+    handleAnimationEnd 
+  };
 };
-
+// 执行闭包函数，获取所需变量/方法
+const { toastList, openToast, handleAnimationEnd } = createToastManager();
 
 // 卸载时清理 Toast 列表
 onUnmounted(() => {
