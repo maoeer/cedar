@@ -6,7 +6,7 @@
 - VSCode插件：REST Client
 
 ### 2. 环境搭建
-#### (1）初始化项目
+#### （1）初始化项目
 ```bash
 npm init -y
 ```
