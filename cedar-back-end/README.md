@@ -21,16 +21,16 @@ npm install nodemon cors --save-dev
 #### (3) 结构目录
 ```plaintext
 cedar-back-end/
-├── node_modules/       # 依赖包目录（自动生成）
 ├── db/                 # 数据库目录（手动新建）
 ├──├──index.js          # 数据库配置文件（手动新建）
 ├──├──db.json           # 数据库存储文件（手动新建）
+├── node_modules/       # 依赖包目录（自动生成）
 ├── routes/             # 路由配置文件（手动新建）
 ├── .env                # 环境变量配置文件（手动新建）
-├── README.md           # 文档文件（手动新建）
 ├── app.js              # 服务器入口文件（手动新建）
+├── package-lock.json   # 依赖版本锁定文件（自动生成）
 ├── package.json        # 项目配置文件（自动生成）
-└── package-lock.json   # 依赖版本锁定文件（自动生成）
+└── README.md           # 文档文件（手动新建）
 ```
 
 #### （4）配置环境变量（.env 文件）
@@ -49,7 +49,6 @@ require('dotenv').config();
 
 const express= require('express');
 const cors = require('cors');
-const path = require('path');
 
 // 从环境变量读取配置
 const PORT = process.env.PORT || 3000;
@@ -62,7 +61,7 @@ app.use(express.json());
 
 // 启动服务器
 app.listen(PORT, () => {
-    console.log(`服务器已启动：http://localhost:${PORT}`);
+  console.log(`服务器已启动：http://localhost:${PORT}`);
 });
 ```
 
