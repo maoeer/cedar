@@ -7,12 +7,11 @@ const path = require('path');
 const userRouter = require('./routes/users');
 const { initDB } = require('./db/index');
 
-// 初始化 Express 实例
-const app = express();
-
 // 从环境变量读取配置
 const PORT = process.env.PORT || 3000;
 
+// 初始化 Express 实例
+const app = express();
 // 全局中间件配置
 app.use(cors());
 app.use(express.json());

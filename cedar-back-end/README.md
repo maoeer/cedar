@@ -1,7 +1,8 @@
 # Cedar 后端管理系统前端文档
 ## 一、系统的创建
 ### 1. 核心技术栈：
-- 核心技术：Nodejs、Express、LowDB、dotenv
+- 核心技术：Nodejs、Express、dotenv
+- 数据库：LowDB
 - 辅助工具：nodemon、cors
 - VSCode插件：REST Client
 
@@ -21,17 +22,158 @@ npm install nodemon cors --save-dev
 ```plaintext
 cedar-back-end/
 ├── node_modules/       # 依赖包目录（自动生成）
+├── db/                 # 数据库配置文件（手动新建）
+├── routes/             # 路由配置文件（手动新建）
 ├── .env                # 环境变量配置文件（手动新建）
+├── README.md           # 文档文件（手动新建）
 ├── app.js              # 服务器入口文件（手动新建）
 ├── package.json        # 项目配置文件（自动生成）
 └── package-lock.json   # 依赖版本锁定文件（自动生成）
 ```
 
-### 3. LowDB实现
-#### (1)  配置环境变量（.env 文件）
+#### （4）配置环境变量（.env 文件）
 ```env
 # 服务器端口
 PORT=3000
 # LowDB 数据库文件路径
-DB_PATH=./db.json
+DB_PATH=db.json
+```
+
+### 3. 编写 app.js 入口文件
+创建 app.js 文件
+```javascript
+// 加载环境变量
+require('dotenv').config();
+
+const express= require('express');
+const cors = require('cors');
+const path = require('path');
+
+// 从环境变量读取配置
+const PORT = process.env.PORT || 3000;
+
+// 初始化 Express 实例
+const app = express();
+// 全局中间件配置
+app.use(cors());
+app.use(express.json());
+
+// 启动服务器
+app.listen(PORT, () => {
+    console.log(`服务器已启动：http://localhost:${PORT}`);
+});
+```
+
+### 4. 引入LowDB
+####（1）编写配置文件
+```javascript
+const { Low } = require('lowdb');
+const { JSONFile } = require('lowdb/node');
+const path = require('path');
+
+// 从环境变量读取数据库路径
+const DB_PATH = path.resolve(__dirname, process.env.DB_PATH || './db.json');
+
+// 指定 JSON 文件存储数据
+const adapter = new JSONFile(DB_PATH);
+// 数据库默认数据
+const defaultData = {};
+// 初始化 LowDB 数据库
+const db = new Low(adapter, defaultData);
+
+// 初始化数据库 
+const initDB = async () => {
+  await db.read();
+  console.log(`LowDB 数据库初始化成功！路径：${DB_PATH}`);
+  return db;
+};
+
+module.exports = {
+  db,
+  initDB
+};
+```
+
+#### （2）添加 db.json 文件
+在 /db 下添加 db.json文件
+```json
+{
+  "users": [
+    { "id": 1, "username": "admin", "age": 25 },
+    { "id": 2, "username": "test", "age": 20 }
+  ]
+}
+```
+
+#### （3）在 app.js 引入
+```javascript
+const { initDB } = require('./db/index');
+
+// 初始化数据库 + 启动服务器，自调用函数配合 async + await 
+(async () => {
+  try {
+    // 先初始化数据库，再启动服务器
+    await initDB();
+    // 启动服务器
+    app.listen(PORT, () => {
+      console.log(`服务器已启动：http://localhost:${PORT}`);
+    });
+  } catch (err) {
+    console.error('服务器启动失败：', err.message);
+    process.exit(1); // 数据库初始化失败则退出进程
+  }
+})();
+```
+
+### 5. 编写路由
+#### （1）创建 /routes/user.js 文件
+```javascript
+const express = require('express');
+const { db } = require('../db/index');
+
+// 创建路由实例
+const router = express.Router();
+
+// 获取所有用户
+router.get('/', async (req, res) => {
+  try {
+    const users = db.data.users;
+    res.send({
+      code: 200,
+      message: '获取用户列表成功',
+      data: users
+    });
+  } catch (err) {
+    res.status(500).send({
+      code: 500,
+      message: '获取用户列表失败',
+      error: err.message
+    });
+  }
+});
+
+// 导出路由
+module.exports = router;
+```
+
+#### （2）在 app.js 引入
+```javascript
+const userRouter = require('./routes/users');
+
+app.use('/api/users', userRouter);
+```
+
+### 6. 启动热部署
+- 修改 package.json 文件
+```json
+{
+    "scripts": {
+        "dev": "nodemon app.js",
+    }
+}
+```
+
+- 启动项目
+```bash
+npm run dev
 ```
