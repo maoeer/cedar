@@ -8,12 +8,7 @@ const DB_PATH = path.resolve(__dirname, process.env.DB_PATH || './db.json');
 // 指定 JSON 文件存储数据
 const adapter = new JSONFile(DB_PATH);
 // 数据库默认数据
-const defaultData = {
-  users: [
-    { id: 1, username: 'admin', age: 25 },
-    { id: 2, username: 'test', age: 20 }
-  ]
-};
+const defaultData = {};
 // 初始化 LowDB 数据库
 const db = new Low(adapter, defaultData);
 
