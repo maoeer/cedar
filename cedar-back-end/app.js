@@ -4,38 +4,31 @@ require('dotenv').config();
 const express= require('express');
 const cors = require('cors');
 const path = require('path');
-const { Low } = require('lowdb');
-const { JsonFile, JSONFile } = require('lowdb/node');
+const userRouter = require('./routes/users');
+const { initDB } = require('./db/index');
 
 // 初始化 Express 实例
 const app = express();
 
 // 从环境变量读取配置
 const PORT = process.env.PORT || 3000;
-const DB_PATH = path.resolve(__dirname, process.env.DB_PATH || './db.json');
 
 // 全局中间件配置
 app.use(cors());
 app.use(express.json());
+app.use('/api/users', userRouter);
 
-// 指定 JSON 文件存储数据
-const adapter = new JSONFile(DB_PATH);
-// 数据库默认数据
-const defaultData = {
-  users: [
-    { id: 1, username: 'admin', age: 25 },
-    { id: 2, username: 'test', age: 20 }
-  ]
-};
-// 初始化 LowDB 数据库
-const db = new Low(adapter, defaultData);
-// 预加载数据库
-db.read().then(() => {
-  console.log('LowDB 数据库初始化成功');
-});
-
-// 启动数据库
-app.listen(PORT, () => {
-  console.log(`服务器启动：http://localhost:${PORT}`);
-  console.log(`数据库文件：${DB_PATH}`);
-});
+// 初始化数据库 + 启动服务器，自调用函数配合 async + await 
+(async () => {
+  try {
+    // 先初始化数据库，再启动服务器
+    await initDB();
+    // 启动服务器
+    app.listen(PORT, () => {
+      console.log(`服务器已启动：http://localhost:${PORT}`);
+    });
+  } catch (err) {
+    console.error('服务器启动失败：', err.message);
+    process.exit(1); // 数据库初始化失败则退出进程
+  }
+})();

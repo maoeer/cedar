@@ -2,8 +2,6 @@ const { Low } = require('lowdb');
 const { JSONFile } = require('lowdb/node');
 const path = require('path');
 
-// 从环境变量读取配置
-const PORT = process.env.PORT || 3000;
 // 从环境变量读取数据库路径
 const DB_PATH = path.resolve(__dirname, process.env.DB_PATH || './db.json');
 
