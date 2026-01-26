@@ -22,7 +22,9 @@ npm install nodemon cors --save-dev
 ```plaintext
 cedar-back-end/
 ├── node_modules/       # 依赖包目录（自动生成）
-├── db/                 # 数据库配置文件（手动新建）
+├── db/                 # 数据库目录（手动新建）
+├──├──index.js          # 数据库配置文件（手动新建）
+├──├──db.json           # 数据库存储文件（手动新建）
 ├── routes/             # 路由配置文件（手动新建）
 ├── .env                # 环境变量配置文件（手动新建）
 ├── README.md           # 文档文件（手动新建）
@@ -35,7 +37,7 @@ cedar-back-end/
 ```env
 # 服务器端口
 PORT=3000
-# LowDB 数据库文件路径
+# LowDB 数据库文件路径，在 /db 目录使用 
 DB_PATH=db.json
 ```
 
@@ -65,7 +67,7 @@ app.listen(PORT, () => {
 ```
 
 ### 4. 引入LowDB
-####（1）编写配置文件
+#### （1）编写配置文件
 ```javascript
 const { Low } = require('lowdb');
 const { JSONFile } = require('lowdb/node');
