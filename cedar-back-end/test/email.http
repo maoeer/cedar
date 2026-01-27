@@ -1,0 +1,7 @@
+### 发送邮箱验证码
+POST http://localhost:3000/api/email/get-code
+Content-Type: application/json; charset=utf-8
+
+{
+  "email": "3665043258@qq.com"
+}

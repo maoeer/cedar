@@ -1,6 +1,3 @@
-@baseUrl = http://localhost:3000/api
-# @prepend
-Content-Type: application/json; charset=utf-8
-
 ### 获取全部用户列表
-GET {{baseUrl}}/user
+GET http://localhost:3000/api/user
+Content-Type: application/json; charset=utf-8
