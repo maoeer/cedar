@@ -1,7 +1,7 @@
 # Cedar 后端管理系统前端文档
 ## 一、系统的创建
 ### 1. 核心技术栈：
-- 核心技术：Nodejs、Express、dotenv
+- 核心技术：Nodejs、Express、dotenv、nodemailer
 - 数据库：LowDB
 - 辅助工具：nodemon、cors
 - VSCode插件：REST Client
@@ -137,20 +137,7 @@ const router = express.Router();
 
 // 获取所有用户
 router.get('/', async (req, res) => {
-  try {
-    const users = db.data.users;
-    res.send({
-      code: 200,
-      message: '获取用户列表成功',
-      data: users
-    });
-  } catch (err) {
-    res.status(500).send({
-      code: 500,
-      message: '获取用户列表失败',
-      error: err.message
-    });
-  }
+  // 后续编写
 });
 
 // 导出路由
@@ -168,9 +155,9 @@ app.use('/api/users', userRouter);
 - 修改 package.json 文件
 ```json
 {
-    "scripts": {
-        "dev": "nodemon app.js",
-    }
+  "scripts": {
+    "dev": "nodemon app.js",
+  }
 }
 ```
 
@@ -178,3 +165,27 @@ app.use('/api/users', userRouter);
 ```bash
 npm run dev
 ```
+
+## 二、编写路由
+### 1. 用户接口
+- 获取全部用户列表
+- /api/user/
+
+```javascript
+// 获取所有用户
+router.get('/', async (req, res) => {
+  try {
+    // 读取 JSON 文件的最新数据到内存
+    await db.read();
+    const users = db.data.users || [];
+
+    success(res, '获取用户列表成功', users);
+  } catch (err) {
+    serverError(res, '获取用户列表失败', err);
+  }
+});
+```
+
+## 三、工具函数
+- [统一响应结构](./utils/response.js)
+- [邮箱发送/验证工具](./utils/emailService.js)

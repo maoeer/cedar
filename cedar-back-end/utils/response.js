@@ -5,7 +5,7 @@
  */
 const formatTime = (timestamp = Date.now()) => {
   const date = new Date(timestamp);
-  
+
   // 补零函数
   const padZero = (num) => {
     return num.toString().padStart(2, '0');
@@ -60,16 +60,16 @@ const sendResponse = (res, code, message, data, error = null) => {
 };
 
 module.exports = {
-    success: (res, message, data = {}) => {
-      sendResponse(res, 200, message, data);
-    },
-    clientError: (res, message) => { 
-      sendResponse(res, 400, message);
-    },
-    unAuth: (res, message) => {
-      sendResponse(res, 401, message);
-    },
-    serverError: (res, message, error) => {
-      sendResponse(res, 500, message, null, error);
-    }
+  success: (res, message, data = {}) => {
+    sendResponse(res, 200, message, data);
+  },
+  clientError: (res, message) => {
+    sendResponse(res, 400, message);
+  },
+  unAuth: (res, message) => {
+    sendResponse(res, 401, message);
+  },
+  serverError: (res, message, error) => {
+    sendResponse(res, 500, message, null, error);
+  }
 };

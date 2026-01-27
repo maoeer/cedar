@@ -14,7 +14,8 @@
   "dependencies": {
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
-    "lowdb": "^6.1.1"
+    "lowdb": "^6.1.1",
+    "nodemailer": "^7.0.12"
   },
   "devDependencies": {
     "cors": "^2.8.6",
