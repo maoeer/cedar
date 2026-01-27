@@ -14,7 +14,7 @@ npm init -y
 
 #### (2) 安装依赖
 ```bash
-npm install express lowdb@6 dotenv
+npm install express lowdb@6 dotenv nodemailer
 npm install nodemon cors --save-dev
 ```
 
@@ -39,6 +39,8 @@ cedar-back-end/
 PORT=3000
 # LowDB 数据库文件路径，在 /db 目录使用 
 DB_PATH=db.json
+EMAIL_USER="你的邮箱"
+EMAIL_PASS="SMTP 授权码"
 ```
 
 ### 3. 编写 app.js 入口文件
