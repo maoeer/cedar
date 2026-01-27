@@ -1,5 +1,5 @@
 const express = require('express');
-const { success } = require('../utils/response');
+const { success, serverError } = require('../utils/response');
 const { db } = require('../db/index');
 
 // 创建路由实例
@@ -8,18 +8,13 @@ const router = express.Router();
 // 获取所有用户
 router.get('/', async (req, res) => {
   try {
-    const users = db.data.users;
-    res.send({
-      code: 200,
-      message: '获取用户列表成功',
-      data: users
-    });
+    // 读取 JSON 文件的最新数据到内存
+    await db.read();
+    const users = db.data.users || [];
+
+    success(res, '获取用户列表成功', users);
   } catch (err) {
-    res.status(500).send({
-      code: 500,
-      message: '获取用户列表失败',
-      error: err.message
-    });
+    serverError(res, '获取用户列表失败', err);
   }
 });
 
