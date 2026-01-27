@@ -60,7 +60,7 @@ const sendResponse = (res, code, message, data, error = null) => {
 };
 
 module.exports = {
-    success: (res, message, data = null) => {
+    success: (res, message, data = {}) => {
       sendResponse(res, 200, message, data);
     },
     clientError: (res, message) => { 
