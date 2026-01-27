@@ -26,6 +26,8 @@ cedar-back-end/
 ├──├──db.json           # 数据库存储文件（手动新建）
 ├── node_modules/       # 依赖包目录（自动生成）
 ├── routes/             # 路由配置文件（手动新建）
+├── test/               # 路由测试文件（手动新建）
+├── utils/              # 工具函数（手动新建）
 ├── .env                # 环境变量配置文件（手动新建）
 ├── app.js              # 服务器入口文件（手动新建）
 ├── package-lock.json   # 依赖版本锁定文件（自动生成）
@@ -39,8 +41,8 @@ cedar-back-end/
 PORT=3000
 # LowDB 数据库文件路径，在 /db 目录使用 
 DB_PATH=db.json
-EMAIL_USER="你的邮箱"
-EMAIL_PASS="SMTP 授权码"
+EMAIL_USER="发送的邮箱"
+EMAIL_PASS="SMTP授权码"
 ```
 
 ### 3. 编写 app.js 入口文件
@@ -129,28 +131,30 @@ const { initDB } = require('./db/index');
 ```
 
 ### 5. 编写路由
-#### （1）创建 /routes/user.js 文件
+#### （1）创建路由文件
+- [用户路由](./routes/user.js)
+- [邮箱路由](./routes/email.js)
+
+#### （2）创建路由主文件 /routes/index.js 文件
 ```javascript
 const express = require('express');
-const { db } = require('../db/index');
+// 引入所有子路由
+const userRouter = require('./user');
+const emailRouter = require('./email');
 
-// 创建路由实例
 const router = express.Router();
+router.use('/user', userRouter);
+router.use('/email', emailRouter);
+// 等等路由......
 
-// 获取所有用户
-router.get('/', async (req, res) => {
-  // 后续编写
-});
-
-// 导出路由
 module.exports = router;
 ```
 
-#### （2）在 app.js 引入
+#### （3）在 app.js 引入
 ```javascript
-const userRouter = require('./routes/users');
+const routes = require('./routes');
 
-app.use('/api/users', userRouter);
+app.use('/api', routes);
 ```
 
 ### 6. 启动热部署
@@ -184,6 +188,40 @@ router.get('/', async (req, res) => {
     success(res, '获取用户列表成功', users);
   } catch (err) {
     serverError(res, '获取用户列表失败', err);
+  }
+});
+```
+
+### 2. 邮箱接口
+- 发送邮箱
+- /api/email/get-code
+```json
+{
+  "email": "接受验证码邮箱"
+}
+```
+
+```javascript
+// 发送邮箱验证码
+router.post('/get-code', async (req, res) => {
+  try {
+    // 校验邮箱
+    const { email } = req.body;
+    if (!email) {
+      return clientError(res, '请传入邮箱地址');
+    }
+
+    // 发送验证码
+    const result = await sendEmailVerifyCode(email);
+
+    // 返回响应
+    if (result.success) {
+      success(res, result.message);
+    } else {
+      clientError(res, result.message);
+    }
+  } catch (err) {
+    serverError(res, '发送验证码异常', err.message);
   }
 });
 ```
