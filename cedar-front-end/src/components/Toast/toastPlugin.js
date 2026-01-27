@@ -1,5 +1,5 @@
 import { createVNode, render } from 'vue';
-import Toast from '@/components/Toast/Toast.vue';
+import Toast from '@/components/Toast/index.vue';
 
 // 创建 Dom 容器，用于挂载 Toast 组件
 const container = document.createElement('div');
