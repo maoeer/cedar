@@ -1,5 +1,6 @@
 const express = require('express');
 const { sendEmailVerifyCode, verifyEmailCode } = require('../utils/emailService');
+const { generateToken } = require('../utils/jwtService.js');
 const { success, clientError, serverError } = require('../utils/response');
 
 const router = express.Router();
@@ -45,9 +46,16 @@ router.post('/verify-code', (req, res) => {
     }
 
     const result = verifyEmailCode(email, verifyCode);
-    result.success
-      ? success(res, result.message)
-      : clientError(res, result.message);
+    if (!result.success) {
+      return clientError(res, result.message);
+    }
+
+    // 生成令牌
+    const token = generateToken({
+      email
+    });
+
+    success(res, result.message, token);
   } catch (err) {
     serverError(res, '校验验证码异常', err.message);
   }

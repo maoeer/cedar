@@ -3,23 +3,17 @@ const jwt = require('jsonwebtoken');
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRES = process.env.JWT_EXPIRES;
 
-if (!JWT_SECRET) {
-  throw new Error('未配置 JWT_SECRET 环境变量！');
-}
-
 /**
  * 生成 JWT token
  * @param {Object} payload - 存入 Token 数据
  * @returns {String} 生成的 Token 字符串
  */
-const generteToken = (payload) => {
+const generateToken = (email) => {
   try {
     return jwt.sign(
-        payload, 
+        { email }, 
         JWT_SECRET,
-        {
-            expiresIn: JWT_EXPIRES
-        }
+        { expiresIn: JWT_EXPIRES }
     );
   } catch (err) {
     throw new Error('Token 生成失败');
@@ -54,6 +48,6 @@ const verifyToken = (token) => {
 };
 
 module.exports = {
-  generteToken,
+  generateToken,
   verifyToken
 };
