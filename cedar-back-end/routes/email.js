@@ -1,5 +1,5 @@
 const express = require('express');
-const { sendEmailVerifyCode } = require('../utils/emailService');
+const { sendEmailVerifyCode, verifyEmailCode } = require('../utils/emailService');
 const { success, clientError, serverError } = require('../utils/response');
 
 const router = express.Router();
@@ -24,6 +24,32 @@ router.post('/get-code', async (req, res) => {
     }
   } catch (err) {
     serverError(res, '发送验证码异常', err.message);
+  }
+});
+
+// 校验验证码
+router.post('/verify-code', (req, res) => {
+  try {
+    const { email, code } = req.body || {};
+
+    if (!email) {
+      return clientError(res, '请传入接收验证码的邮箱地址');
+    }
+    if (!code) {
+      return clientError(res, '请传入6位数字验证码');
+    }
+
+    const verifyCode = String(code).trim();
+    if (!/^\d{6}$/.test(verifyCode)) {
+      return clientError(res, '验证码格式错误，请输入6位数字验证码');
+    }
+
+    const result = verifyEmailCode(email, verifyCode);
+    result.success 
+      ? success(res, result.message) 
+      : clientError(res, result.message);
+  } catch (err) {
+    serverError(res, '校验验证码异常', err.message);
   }
 });
 
