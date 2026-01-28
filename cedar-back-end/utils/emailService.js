@@ -12,6 +12,7 @@ const transporter = nodemailer.createTransport({
 });
 
 // 存储验证码
+// 结构：{ toEmail: { code: 验证码（string）, expire: 过期时间（number） } }
 const emailCodeStore = {};
 
 // 生成 6 位验证码
