@@ -5,3 +5,12 @@ Content-Type: application/json; charset=utf-8
 {
   "email": "3665043258@qq.com"
 }
+
+### 校验验证码
+POST http://localhost:3000/api/emial/verify-code
+Content-Type: application/json; charset=utf-8
+
+{
+  "email": "3665043258@qq.com",
+  "code": 123456 
+}
