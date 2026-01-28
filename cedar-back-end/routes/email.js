@@ -36,17 +36,17 @@ router.post('/verify-code', (req, res) => {
       return clientError(res, '请传入接收验证码的邮箱地址');
     }
     if (!code) {
-      return clientError(res, '请传入6位数字验证码');
+      return clientError(res, '请传入6位验证码');
     }
 
     const verifyCode = String(code).trim();
     if (!/^\d{6}$/.test(verifyCode)) {
-      return clientError(res, '验证码格式错误，请输入6位数字验证码');
+      return clientError(res, '验证码格式错误');
     }
 
     const result = verifyEmailCode(email, verifyCode);
-    result.success 
-      ? success(res, result.message) 
+    result.success
+      ? success(res, result.message)
       : clientError(res, result.message);
   } catch (err) {
     serverError(res, '校验验证码异常', err.message);
