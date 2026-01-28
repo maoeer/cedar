@@ -17,7 +17,17 @@ const emailCodeStore = {};
 
 // 生成 6 位验证码
 const generateVerifyCode = () => {
-  return Math.floor(100000 + Math.random() * 900000).toString();
+  // 0-9 A-Z
+  const charPool = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let verifyCode = '';
+
+  for (let i = 0; i < 6; i++) {
+    // 生成 0 到 (charPool.length - 1) 的下标
+    const randomIndex = Math.floor(Math.random() * charPool.length);
+    verifyCode += charPool[randomIndex];
+  }
+
+  return verifyCode;
 };
 
 // 发送邮箱验证码
