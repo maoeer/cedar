@@ -1,7 +1,7 @@
 # Cedar 后端管理系统前端文档
 ## 一、系统的创建
 ### 1. 核心技术栈：
-- 核心技术：Nodejs、Express、dotenv、nodemailer
+- 核心技术：Nodejs、Express、dotenv、nodemailer、jsonwebtoken
 - 数据库：LowDB
 - 辅助工具：nodemon、cors
 - VSCode插件：REST Client
@@ -41,8 +41,12 @@ cedar-back-end/
 PORT=3000
 # LowDB 数据库文件路径，在 /db 目录使用 
 DB_PATH=db.json
-EMAIL_USER="发送的邮箱"
-EMAIL_PASS="SMTP授权码"
+# 邮箱配置
+EMAIL_USER=发送的邮
+EMAIL_PASS=SMTP授权码
+# JWT 令牌配置
+JWT_SECRET=jwt_maooer
+JWT_EXPIRES=1d
 ```
 
 ### 3. 编写 app.js 入口文件
