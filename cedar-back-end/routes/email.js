@@ -2,6 +2,7 @@ const express = require('express');
 const { sendEmailVerifyCode, verifyEmailCode } = require('../utils/emailService');
 const { generateToken } = require('../utils/jwtService.js');
 const { success, clientError, serverError } = require('../utils/response');
+const { db } = require('../db/index');
 
 const router = express.Router();
 
@@ -16,9 +17,8 @@ router.post('/get-code', async (req, res) => {
 
     // 查询邮箱是否已注册
     await db.read();
-    const existingUser = db.get('users')
-      .find({ email })
-      .value();
+    const users = db.data?.users || [];
+    const existingUser = users.find(user => user.email === email);
     if (!existingUser) {
       return clientError(res, '该邮箱尚未注册');
     }
@@ -63,9 +63,7 @@ router.post('/verify-code', (req, res) => {
     }
 
     // 生成令牌
-    const token = generateToken({
-      email
-    });
+    const token = generateToken(email);
 
     success(res, result.message, token);
   } catch (err) {

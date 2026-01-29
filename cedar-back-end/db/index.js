@@ -19,7 +19,7 @@ const initDB = async () => {
   await db.read();
   console.log(`LowDB 数据库初始化成功！路径：${DB_PATH}`);
 
-  const users = db.data.users || [];
+  const users = db.data?.users || [];
   // 无用户数据，从 0 开始自增
   if (users.length <= 0) {
     maxUserId = 0; 

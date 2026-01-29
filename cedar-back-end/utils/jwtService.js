@@ -11,12 +11,12 @@ const JWT_EXPIRES = process.env.JWT_EXPIRES;
 const generateToken = (email) => {
   try {
     return jwt.sign(
-        { email }, 
-        JWT_SECRET,
-        { expiresIn: JWT_EXPIRES }
+      { email },
+      JWT_SECRET,
+      { expiresIn: JWT_EXPIRES }
     );
   } catch (err) {
-    throw new Error('Token 生成失败');
+    throw new Error('Token 生成失败, ' + err.message);
   }
 };
 

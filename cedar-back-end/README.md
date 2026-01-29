@@ -14,7 +14,7 @@ npm init -y
 
 #### (2) 安装依赖
 ```bash
-npm install express lowdb@6 dotenv nodemailer
+npm install express lowdb@6 dotenv nodemailer jsonwebtoken
 npm install nodemon cors --save-dev
 ```
 

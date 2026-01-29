@@ -10,7 +10,7 @@ router.get('/', async (req, res) => {
   try {
     // 读取 JSON 文件的最新数据到内存
     await db.read();
-    const users = db.data.users || [];
+    const users = db.data?.users || [];
 
     success(res, '获取用户列表成功', users);
   } catch (err) {
