@@ -234,3 +234,4 @@ router.post('/get-code', async (req, res) => {
 ## 三、工具函数
 - [统一响应结构](./utils/response.js)
 - [邮箱发送/验证工具](./utils/emailService.js)
+- [jsonwebtoken工具](./utils/jwtService.js)
