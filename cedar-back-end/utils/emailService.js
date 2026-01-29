@@ -72,7 +72,7 @@ const sendEmailVerifyCode = async (toEmail) => {
 const verifyEmailCode = (toEmail, inputCode) => {
   // 检查是否发送验证码
   const codeInfo = emailCodeStore[toEmail];
-  console.log(emailCodeStore, inputCode)
+
   if (!codeInfo) {
     return {
       success: false,

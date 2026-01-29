@@ -14,6 +14,14 @@ router.post('/get-code', async (req, res) => {
       return clientError(res, '请传入邮箱地址');
     }
 
+    await db.read();
+    const existingUser = db.get('users')
+      .find({ email })
+      .value();
+    if (!existingUser) {
+      return clientError(res, '该邮箱尚未注册');
+    }
+
     // 发送验证码
     const result = await sendEmailVerifyCode(email);
 
@@ -60,5 +68,7 @@ router.post('/verify-code', (req, res) => {
     serverError(res, '校验验证码异常', err.message);
   }
 });
+
+
 
 module.exports = router;
