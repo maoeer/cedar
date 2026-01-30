@@ -179,56 +179,39 @@ npm run dev
 
 ## 二、编写路由
 ### 1. 用户接口
-- 获取全部用户列表
+- [用户接口文件](./routes/user.js)
+
+（1）获取全部用户列表
 - /api/user/
+- 响应体:
+```json
 
-```javascript
-// 获取所有用户
-router.get('/', async (req, res) => {
-  try {
-    // 读取 JSON 文件的最新数据到内存
-    await db.read();
-    const users = db.data.users || [];
-
-    success(res, '获取用户列表成功', users);
-  } catch (err) {
-    serverError(res, '获取用户列表失败', err);
-  }
-});
 ```
 
 ### 2. 邮箱接口
-- 发送邮箱
+- [邮箱接口文件](./routes/email.js)
+
+（1）发送邮箱
 - /api/email/get-code
+- 请求体: 
 ```json
 {
-  "email": "接受验证码邮箱"
+  "email": "接受验证码的邮箱"
 }
 ```
 
-```javascript
-// 发送邮箱验证码
-router.post('/get-code', async (req, res) => {
-  try {
-    // 校验邮箱
-    const { email } = req.body;
-    if (!email) {
-      return clientError(res, '请传入邮箱地址');
-    }
+(2) 验证验证码
+- /api/email/verify-code
+- 请求体:
+```json
+{
+  "email": "接受验证码的邮箱",
+  "code": "验证码"
+}
+```
+- 响应体:
+```json
 
-    // 发送验证码
-    const result = await sendEmailVerifyCode(email);
-
-    // 返回响应
-    if (result.success) {
-      success(res, result.message);
-    } else {
-      clientError(res, result.message);
-    }
-  } catch (err) {
-    serverError(res, '发送验证码异常', err.message);
-  }
-});
 ```
 
 ## 三、工具函数
