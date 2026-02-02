@@ -5,7 +5,7 @@
 - 框架核心：Vue3
 - 构建工具：Vite
 - 路由管理：VueRouter4
-- 状态管理：Pinia
+- 状态管理：Pinia、pinia-plugin-persistedstate
 - 网络请求：Axios
 - 版本控制：Git
 - 样式预处理：Sass
@@ -36,7 +36,7 @@ cedar-front-end/
 - 安装依赖
 ```bash
 cd cedar-front-end
-npm install vue-router@4 pinia axios 
+npm install vue-router@4 pinia axios pinia-plugin-persistedstate
 npm install -D sass 
 ```
 

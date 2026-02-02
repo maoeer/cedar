@@ -13,7 +13,7 @@ const initToast = () => {
 };
 
 // 全局 Toast 方法，方便调用组件的 openToast
-const showToast = (message) => {
+export const showToast = (message) => {
   if (!toastVNode) {
     // 初次调用时初始化组件
     initToast();

@@ -1,50 +1,59 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 // Tab 数据源
 const tabs = ref([
   { label: '登录', value: 0, path: '/auth/login' },
   { label: '注册', value: 1, path: '/auth/register' }
 ]);
-// 当前激活 Tan 下标
+// 当前激活 Tab 下标
 const activeIndex = ref(0);
 // tabBg 的ref
 const tabBgRef = ref(null);
 const tabWrapperRef = ref(null);
 const router = useRouter();
-
-// 初始化位置和宽度
-const initTabBg = () => {
-  if (!tabBgRef.value || !tabWrapperRef.value) return;
-
-  const firstTab = tabWrapperRef.value.querySelector('.tab');
-  if (!firstTab) return;
-  tabBgRef.value.style.width = `${firstTab.offsetWidth}px`;
-  tabBgRef.value.style.left = `${firstTab.offsetLeft}px`;
-};
-onMounted(initTabBg);
+const route = useRoute();
 
 // 监听 activeIndex 变化，更新背景位置
 const updateTabBg = () => {
   if (!tabBgRef.value || !tabWrapperRef.value) return;
 
+  // 根据当前 activeIndex 获取激活的 tab 元素
   const activeTab = tabWrapperRef.value.querySelectorAll('.tab')[activeIndex.value];
   if (!activeTab) return;
   tabBgRef.value.style.width = `${activeTab.offsetWidth}px`;
   tabBgRef.value.style.left = `${activeTab.offsetLeft}px`;
 };
+
+onMounted(() => {
+  // 同步路由对应的 Tab 下标
+  const currentTab = tabs.value.find(tab => tab.path === route.path);
+  if (currentTab) activeIndex.value = currentTab.value;
+
+  // 首次挂载执行背景更新
+  updateTabBg();
+});
+
+// 监听 activeIndex 变化，更新背景位置
 watch(activeIndex, updateTabBg);
+
+// 监听路由变化，避免手动修改 URL 出现问题
+watch(
+  () => route.path,
+  (newPath) => {
+    const currentTab = tabs.value.find(tab => tab.path === newPath);
+    if (currentTab) activeIndex.value = currentTab.value;
+  }
+);
 
 // 切换标签函数
 const switchTab = (targetIndex, toPath) => {
-  if (activeIndex.value === targetIndex) return;
+  if (activeIndex.value === targetIndex || route.path === toPath) return;
   activeIndex.value = targetIndex;
 
   // 路由切换
-  router.push({
-    path: toPath
-  });
+  router.push({ path: toPath });
 };
 </script>
 
@@ -97,6 +106,4 @@ const switchTab = (targetIndex, toPath) => {
     transition: all 0.3s ease;
   }
 }
-
-
 </style>

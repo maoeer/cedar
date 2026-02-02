@@ -1,4 +1,8 @@
 <script setup>
+import { useCaptchaStore } from '@/stores/captchaStore';
+
+const captchaStore = useCaptchaStore();
+
 defineProps({
   label: {
     type: String,
@@ -22,15 +26,24 @@ defineProps({
   isCaptcha: {
     type: Boolean,
     default: false
+  },
+  modelValue: {
+    type: String,
+    default: ''
   }
 });
 
-const emit = defineEmits(['sendCaptcha']);
+const emit = defineEmits(['sendCaptcha', 'update:modelValue']);
 
 const handleSendCaptcha = (e) => {
   e.preventDefault();
+  if (captchaStore.emailRemainSeconds > 0) return;
   emit('sendCaptcha');
 };
+
+const handleInput = (e) => {
+  emit('update:modelValue', e.target.value);
+}
 </script>
 
 <template>
@@ -42,15 +55,26 @@ const handleSendCaptcha = (e) => {
       :type="type"
       :placeholder="placeholder"
       :id="id"
-      :name="name">
+      :name="name"
+      :value="modelValue"
+      @input="handleInput">
 
     <div v-else class="form-item-captcha">
       <input
         type="text"
         :placeholder="placeholder"
         :id="id"
-        :name="name">
-      <button @click="handleSendCaptcha">获取验证码</button>
+        :name="name"
+        :value="modelValue"
+        @input="handleInput">
+
+      <button 
+        :disabled="captchaStore.emailRemainSeconds > 0"
+         @click="handleSendCaptcha">
+         {{ captchaStore.emailRemainSeconds > 0
+            ? `${captchaStore.emailRemainSeconds}s后重新获取`
+            : '获取验证码'}}
+      </button>
     </div>  
   </div>
 </template>

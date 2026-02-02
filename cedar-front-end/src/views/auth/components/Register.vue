@@ -1,19 +1,25 @@
 <script setup>
 import FormItem from './FormItem.vue';
-import { getCurrentInstance } from 'vue';
+import { useCaptcha } from '../composables/useCaptcha';
 import '../style/form.scss';
 
-// 获取 vue 实例
-const {proxy} = getCurrentInstance();
-// 发送验证码
-const sendCaptcha = () => {
-  proxy.$toast('成功发送验证码');
-}
+const { form, handleSendCaptcha, validateForm } = useCaptcha('register');
+
+// 处理注册逻辑
+const handleRegister = (e) => {
+  e.preventDefault();
+
+  // 表单校验
+  if (!validateForm()) return;
+
+  console.log('注册表单数据：', form.value);
+};
 </script>
 
 <template>
   <form class="form">
     <FormItem
+      v-model="form.email"
       label="邮箱"
       id="email"
       name="email"
@@ -21,6 +27,7 @@ const sendCaptcha = () => {
     />
     
     <FormItem
+      v-model="form.password"
       label="密码"
       id="password"
       name="password"
@@ -29,6 +36,7 @@ const sendCaptcha = () => {
     />
 
     <FormItem
+      v-model="form.confirmPassword"
       label="确认密码"
       id="confirm-password"
       name="confirm-password"
@@ -37,14 +45,15 @@ const sendCaptcha = () => {
     />
 
     <FormItem
+      v-model="form.captcha"
       label="验证码"
       id="captcha"
       name="captcha"
       placeholder="请输入验证码"
       isCaptcha
-      @sendCaptcha="sendCaptcha"
+      @sendCaptcha="handleSendCaptcha"
     />
-    <button class="form-submit-btn">注册</button>
+    <button class="form-submit-btn" @click="handleRegister">注册</button>
   </form>
 </template>
 
