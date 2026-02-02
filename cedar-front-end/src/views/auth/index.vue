@@ -1,5 +1,5 @@
 <script setup>
-
+import Tab from './components/Tab.vue';
 </script>
 
 <template>
@@ -12,7 +12,8 @@
       </header>
     
       <main>
-        <router-view></router-view>
+        <Tab></Tab>
+        <RouterView></RouterView>
       </main>
     </div>
   </div>
