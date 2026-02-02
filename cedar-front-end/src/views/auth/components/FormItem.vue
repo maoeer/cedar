@@ -1,7 +1,6 @@
 <script setup>
+import { computed, onMounted } from 'vue';
 import { useCaptchaStore } from '@/stores/captchaStore';
-
-const captchaStore = useCaptchaStore();
 
 defineProps({
   label: {
@@ -35,6 +34,16 @@ defineProps({
 
 const emit = defineEmits(['sendCaptcha', 'update:modelValue']);
 
+const captchaStore = useCaptchaStore();
+
+// 按钮文案逻辑
+const captchBtnText = computed(() => {
+  const remian = captchaStore.emailRemainSeconds;
+  return remian > 0 
+    ? `${remian}s后重新获取` 
+    : '获取验证码';
+});
+     
 const handleSendCaptcha = (e) => {
   e.preventDefault();
   if (captchaStore.emailRemainSeconds > 0) return;
@@ -44,6 +53,11 @@ const handleSendCaptcha = (e) => {
 const handleInput = (e) => {
   emit('update:modelValue', e.target.value);
 }
+
+onMounted(() => {
+  // 组件挂载时初始化倒计时
+  captchaStore.initCountdown();
+});
 </script>
 
 <template>
@@ -70,10 +84,8 @@ const handleInput = (e) => {
 
       <button 
         :disabled="captchaStore.emailRemainSeconds > 0"
-         @click="handleSendCaptcha">
-         {{ captchaStore.emailRemainSeconds > 0
-            ? `${captchaStore.emailRemainSeconds}s后重新获取`
-            : '获取验证码'}}
+        @click="handleSendCaptcha">
+        {{ captchBtnText }}
       </button>
     </div>  
   </div>

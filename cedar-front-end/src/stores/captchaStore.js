@@ -1,39 +1,85 @@
 import { defineStore } from 'pinia';
-import { ref, computed } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 
-// 固定的倒计时间隔: 60s
-const DURATION = 60;
+const DURATION = 60; // 60秒倒计时
 
 export const useCaptchaStore = defineStore('captcha', () => {
-  // 发送开始时间戳
+  // 发送验证码的时间戳
   const emailSendStartTime = ref(0);
+  // 剩余秒数
+  const emailRemainSeconds = ref(0);
+  // 定时器
+  let countdownTimer = null;
 
-  // 计算倒计时剩余时间
-  const emailRemainSeconds = computed(() => {
-    if (emailSendStartTime.value === 0) return 0;
+  // 计算剩余秒数的核心方法
+  const calculateRemainSeconds = () => {
+    if (emailSendStartTime.value === 0) {
+      emailRemainSeconds.value = 0;
+      return;
+    }
 
-    // 计算公式：
-    // (时间戳 - 开始时间) / 1000 = 已走的时间
-    // 倒计时间隔 - 已走的时间 = 剩余时间
-    const remainSeconds = Math.ceil(DURATION - (Date.now() - emailSendStartTime.value) / 1000);
-    return remainSeconds > 0 ? remainSeconds : 0;
-  });
+    // 已流逝时间 = (当前时间 - 发送时间) / 1000（转秒）
+    const elapsed = Math.floor((Date.now() - emailSendStartTime.value) / 1000);
+    // 剩余时间 = 60 - 已流逝时间（最小为0）
+    const remain = DURATION - elapsed;
+    emailRemainSeconds.value = remain > 0 ? remain : 0;
+  };
 
-  // 设置开始时间戳
+  // 开始倒计时
+  const startCountdown = () => {
+    // 先清除已有定时器
+    if (countdownTimer) clearInterval(countdownTimer);
+    // 立即计算一次
+    calculateRemainSeconds();
+    // 剩余时间 > 0，启动计时器
+    if (emailRemainSeconds.value > 0) {
+      // 每秒更新剩余秒数
+      countdownTimer = setInterval(() => {
+        calculateRemainSeconds();
+        // 剩余秒数为0时清除定时器
+        if (emailRemainSeconds.value <= 0) {
+          clearInterval(countdownTimer);
+          countdownTimer = null;
+        }
+      }, 1000);
+    }
+  };
+
+  // 初始化
+  const initCountdown = () => {
+    calculateRemainSeconds();
+    startCountdown();
+  }
+
+  // 发送验证码时，记录当前时间戳
   const setEmailSendTime = () => {
     emailSendStartTime.value = Date.now();
+    startCountdown();
   };
 
   // 重置倒计时
   const resetEmailCaptcha = () => {
     emailSendStartTime.value = 0;
+    emailRemainSeconds.value = 0;
+    if (countdownTimer) {
+      clearInterval(countdownTimer);
+      countdownTimer = null;
+    }
   };
 
+  initCountdown();
+
   return {
+    emailSendStartTime,
     emailRemainSeconds,
     setEmailSendTime,
-    resetEmailCaptcha
-  }
+    resetEmailCaptcha,
+    initCountdown
+  };
 }, {
-  persist: true
+  persist: {
+    paths: [
+      'emailSendStartTime'
+    ] // 仅持久化时间戳，刷新后能读取
+  }
 });

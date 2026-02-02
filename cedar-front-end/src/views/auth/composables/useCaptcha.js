@@ -37,7 +37,7 @@ export const useCaptcha = (formType = 'login') => {
       await sendEmailCaptcha(form.value.email);
       // 触发倒计时
       captchaStore.setEmailSendTime();
-      showToast('验证码发送成功');
+      // showToast('验证码发送成功');
     } catch (error) {
       showToast('验证码发送失败，请重试');
       console.error('发送验证码失败：', error);
