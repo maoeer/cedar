@@ -34,14 +34,14 @@ const updateTabBg = () => {
   tabBgRef.value.style.width = `${activeTab.offsetWidth}px`;
   tabBgRef.value.style.left = `${activeTab.offsetLeft}px`;
 };
-watch(activeIndex, () => {
-  updateTabBg();
-});
+watch(activeIndex, updateTabBg);
 
-// 定义切换标签方法
+// 切换标签函数
 const switchTab = (targetIndex, toPath) => {
   if (activeIndex.value === targetIndex) return;
   activeIndex.value = targetIndex;
+
+  // 路由切换
   router.push({
     path: toPath
   });
