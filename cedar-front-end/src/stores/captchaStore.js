@@ -67,8 +67,6 @@ export const useCaptchaStore = defineStore('captcha', () => {
     }
   };
 
-  initCountdown();
-
   return {
     emailSendStartTime,
     emailRemainSeconds,
