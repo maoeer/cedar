@@ -51,6 +51,14 @@ export const useCaptchaStore = defineStore('captcha', () => {
     startCountdown();
   }
 
+  // 清除定时器
+  const clearCountdownTimer = () => {
+    if (countdownTimer) {
+      clearInterval(countdownTimer);
+      countdownTimer = null;
+    }
+  };
+
   // 发送验证码时，记录当前时间戳
   const setEmailSendTime = () => {
     emailSendStartTime.value = Date.now();
@@ -72,7 +80,8 @@ export const useCaptchaStore = defineStore('captcha', () => {
     emailRemainSeconds,
     setEmailSendTime,
     resetEmailCaptcha,
-    initCountdown
+    initCountdown,
+    clearCountdownTimer
   };
 }, {
   persist: {

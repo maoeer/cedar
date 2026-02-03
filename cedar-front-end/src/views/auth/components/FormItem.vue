@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted } from 'vue';
+import { computed } from 'vue';
 import { useCaptchaStore } from '@/stores/captchaStore';
 
 defineProps({
@@ -52,15 +52,7 @@ const handleSendCaptcha = (e) => {
 
 const handleInput = (e) => {
   emit('update:modelValue', e.target.value);
-}
-
-onMounted(() => {
-  // 验证码则初始化倒计时定时器
-  if (isCaptcha) {
-    // 组件挂载时初始化倒计时
-    captchaStore.initCountdown();
-  }
-});
+};
 </script>
 
 <template>
