@@ -260,8 +260,13 @@ export default defineConfig({
 ```
 
 ## 二、页面开发
-### 1. login 登录页面，src/views/login/index.vue
-[login页面](./src/views/login/index.vue)
+### 1. auth 认证页面
+- [index页面](./src/views/auth/index.vue)
+  - [login组件](./src/views/atuh/components/Login.vue)
+  - [register组件](./src/views/auth/components/Register.vue)
+  - [FormItem组件](./src/views/auth/components/FormItem.vue)
+  - [useCaptcha封装公共函数](./src/views/auth/composables)
+  - [form.scss公共表格样式](./src/views/auth/style/form.scss)
 
 ## 三、组件开发
 ### 1. Toast 消息提醒组件，src/components/Toast
@@ -278,3 +283,7 @@ app.use(toastPlugin);
 ## 四、Api 接口开发
 ### 1. 新建 /apis/emailApi.js, 用于编写邮箱相关的接口
 - [emailApi文件](./src/apis/emailApi.js)
+
+## 五、Pinia 的 Store
+### 1. 创建 src/stores/captchaStore.js
+- [captchaStore文件](./src/stores/captchaStore.js)  
