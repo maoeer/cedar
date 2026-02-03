@@ -187,9 +187,21 @@ export const useUserStore = defineStore('user', () => {
 });
 ```
 
-- 挂载 Pinia，在 src/main.js 中
+- 在 src/main.js 中, 挂载 Pinia
 ```javascript
 import { createPinia } from 'pinia';
+
+const pinia = createPinia();
+
+app.use(pinia);
+```
+
+- 在 src/main.js 中，挂载 pinia-plugin-persistedstate 插件进行持久化
+```javascript
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
+
+const pinia = createPinia();
+pinia.use(piniaPluginPersistedstate);
 
 app.use(pinia);
 ```
@@ -255,10 +267,14 @@ export default defineConfig({
 ### 1. Toast 消息提醒组件，src/components/Toast
 - [Toast组件](./src/components/Toast/Toast.vue)
 - [Toast插件](./src/components/Toast/toastPlugin.js)
-- 将 Toast 挂载到 Vue 中:
+将 Toast 挂载到 Vue 中:
 ```js
 import toastPlugin from '@/components/Toast/toastPlugin';
 
 // 挂载 Toast
 app.use(toastPlugin);
 ```
+
+## 四、Api 接口开发
+### 1. 新建 /apis/emailApi.js, 用于编写邮箱相关的接口
+- [emailApi文件](./src/apis/emailApi.js)
