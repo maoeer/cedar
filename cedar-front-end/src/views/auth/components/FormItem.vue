@@ -55,8 +55,11 @@ const handleInput = (e) => {
 }
 
 onMounted(() => {
-  // 组件挂载时初始化倒计时
-  captchaStore.initCountdown();
+  // 验证码则初始化倒计时定时器
+  if (isCaptcha) {
+    // 组件挂载时初始化倒计时
+    captchaStore.initCountdown();
+  }
 });
 </script>
 
