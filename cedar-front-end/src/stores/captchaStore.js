@@ -28,7 +28,7 @@ export const useCaptchaStore = defineStore('captcha', () => {
   // 开始倒计时
   const startCountdown = () => {
     // 先清除已有定时器
-    if (countdownTimer) clearInterval(countdownTimer);
+    clearCountdownTimer();
     // 立即计算一次
     calculateRemainSeconds();
     // 剩余时间 > 0，启动计时器
@@ -38,11 +38,16 @@ export const useCaptchaStore = defineStore('captcha', () => {
         calculateRemainSeconds();
         // 剩余秒数为0时清除定时器
         if (emailRemainSeconds.value <= 0) {
-          clearInterval(countdownTimer);
-          countdownTimer = null;
+          clearCountdownTimer();
         }
       }, 1000);
     }
+  };
+
+  // 发送验证码时，记录当前时间戳
+  const setEmailSendTime = () => {
+    emailSendStartTime.value = Date.now();
+    startCountdown();
   };
 
   // 初始化
@@ -59,20 +64,11 @@ export const useCaptchaStore = defineStore('captcha', () => {
     }
   };
 
-  // 发送验证码时，记录当前时间戳
-  const setEmailSendTime = () => {
-    emailSendStartTime.value = Date.now();
-    startCountdown();
-  };
-
   // 重置倒计时
   const resetEmailCaptcha = () => {
     emailSendStartTime.value = 0;
     emailRemainSeconds.value = 0;
-    if (countdownTimer) {
-      clearInterval(countdownTimer);
-      countdownTimer = null;
-    }
+    clearCountdownTimer();
   };
 
   return {
