@@ -1,0 +1,3 @@
+### 获取全部用户列表
+GET http://localhost:3000/api/user
+Content-Type: application/json; charset=utf-8

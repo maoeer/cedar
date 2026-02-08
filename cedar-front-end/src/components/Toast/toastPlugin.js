@@ -1,5 +1,5 @@
 import { createVNode, render } from 'vue';
-import Toast from '@/components/Toast/Toast.vue';
+import Toast from '@/components/Toast/index.vue';
 
 // 创建 Dom 容器，用于挂载 Toast 组件
 const container = document.createElement('div');
@@ -13,7 +13,7 @@ const initToast = () => {
 };
 
 // 全局 Toast 方法，方便调用组件的 openToast
-const showToast = (message) => {
+export const showToast = (message) => {
   if (!toastVNode) {
     // 初次调用时初始化组件
     initToast();

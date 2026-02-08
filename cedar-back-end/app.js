@@ -3,7 +3,7 @@ require('dotenv').config();
 
 const express= require('express');
 const cors = require('cors');
-const userRouter = require('./routes/user');
+const routes = require('./routes');
 const { initDB } = require('./db/index');
 
 // 从环境变量读取配置
@@ -14,7 +14,7 @@ const app = express();
 // 全局中间件配置
 app.use(cors());
 app.use(express.json());
-app.use('/api/user', userRouter);
+app.use('/api', routes);
 
 // 初始化数据库 + 启动服务器，自调用函数配合 async + await 
 (async () => {

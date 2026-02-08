@@ -1,7 +1,7 @@
 # Cedar 后端管理系统前端文档
 ## 一、系统的创建
 ### 1. 核心技术栈：
-- 核心技术：Nodejs、Express、dotenv
+- 核心技术：Nodejs、Express、dotenv、nodemailer、jsonwebtoken
 - 数据库：LowDB
 - 辅助工具：nodemon、cors
 - VSCode插件：REST Client
@@ -14,7 +14,7 @@ npm init -y
 
 #### (2) 安装依赖
 ```bash
-npm install express lowdb@6 dotenv
+npm install express lowdb@6 dotenv nodemailer jsonwebtoken
 npm install nodemon cors --save-dev
 ```
 
@@ -25,7 +25,9 @@ cedar-back-end/
 ├──├──index.js          # 数据库配置文件（手动新建）
 ├──├──db.json           # 数据库存储文件（手动新建）
 ├── node_modules/       # 依赖包目录（自动生成）
-├── routes/             # 路由配置文件（手动新建）
+├── routes/             # 路由配置目录（手动新建）
+├── test/               # 路由测试目录（手动新建）
+├── utils/              # 工具函数目录（手动新建）
 ├── .env                # 环境变量配置文件（手动新建）
 ├── app.js              # 服务器入口文件（手动新建）
 ├── package-lock.json   # 依赖版本锁定文件（自动生成）
@@ -39,6 +41,12 @@ cedar-back-end/
 PORT=3000
 # LowDB 数据库文件路径，在 /db 目录使用 
 DB_PATH=db.json
+# 邮箱配置
+EMAIL_USER=发送的邮
+EMAIL_PASS=SMTP授权码
+# JWT 令牌配置
+JWT_SECRET=jwt_maooer
+JWT_EXPIRES=1d
 ```
 
 ### 3. 编写 app.js 入口文件
@@ -96,7 +104,8 @@ module.exports = {
 ```
 
 #### （2）添加 db.json 文件
-在 /db 下添加 db.json文件
+在 /db 下添加 db.json文件，并编写初始数据
+> 先写一些测试数据
 ```json
 {
   "users": [
@@ -127,50 +136,39 @@ const { initDB } = require('./db/index');
 ```
 
 ### 5. 编写路由
-#### （1）创建 /routes/user.js 文件
+#### （1）创建路由文件
+- [用户路由](./routes/user.js)
+- [邮箱路由](./routes/email.js)
+
+#### （2）创建路由主文件 /routes/index.js 文件
 ```javascript
 const express = require('express');
-const { db } = require('../db/index');
+// 引入所有子路由
+const userRouter = require('./user');
+const emailRouter = require('./email');
 
-// 创建路由实例
 const router = express.Router();
+router.use('/user', userRouter);
+router.use('/email', emailRouter);
+// 等等路由......
 
-// 获取所有用户
-router.get('/', async (req, res) => {
-  try {
-    const users = db.data.users;
-    res.send({
-      code: 200,
-      message: '获取用户列表成功',
-      data: users
-    });
-  } catch (err) {
-    res.status(500).send({
-      code: 500,
-      message: '获取用户列表失败',
-      error: err.message
-    });
-  }
-});
-
-// 导出路由
 module.exports = router;
 ```
 
-#### （2）在 app.js 引入
+#### （3）在 app.js 引入
 ```javascript
-const userRouter = require('./routes/users');
+const routes = require('./routes');
 
-app.use('/api/users', userRouter);
+app.use('/api', routes);
 ```
 
 ### 6. 启动热部署
 - 修改 package.json 文件
 ```json
 {
-    "scripts": {
-        "dev": "nodemon app.js",
-    }
+  "scripts": {
+    "dev": "nodemon app.js",
+  }
 }
 ```
 
@@ -178,3 +176,45 @@ app.use('/api/users', userRouter);
 ```bash
 npm run dev
 ```
+
+## 二、编写路由
+### 1. 用户接口
+- [用户接口文件](./routes/user.js)
+
+（1）获取全部用户列表
+- /api/user/
+- 响应体:
+```json
+
+```
+
+### 2. 邮箱接口
+- [邮箱接口文件](./routes/email.js)
+
+（1）发送邮箱
+- /api/email/get-code
+- 请求体: 
+```json
+{
+  "email": "接受验证码的邮箱"
+}
+```
+
+(2) 验证验证码
+- /api/email/verify-code
+- 请求体:
+```json
+{
+  "email": "接受验证码的邮箱",
+  "code": "验证码"
+}
+```
+- 响应体:
+```json
+
+```
+
+## 三、工具函数
+- [统一响应结构](./utils/response.js)
+- [邮箱发送/验证工具](./utils/emailService.js)
+- [jsonwebtoken工具](./utils/jwtService.js)
