@@ -33,10 +33,10 @@ export const useCaptcha = (formType = 'login') => {
     }
 
     try {
-      // 调用发送验证码接口
-      await sendEmailCaptcha(form.value.email);
       // 触发倒计时
       captchaStore.setEmailSendTime();
+      // 调用发送验证码接口
+      await sendEmailCaptcha(form.value.email);
       showToast('验证码发送成功');
     } catch (error) {
       showToast('验证码发送失败，请重试');
