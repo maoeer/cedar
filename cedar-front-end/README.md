@@ -265,7 +265,7 @@ export default defineConfig({
   - [login组件](./src/views/atuh/components/Login.vue)
   - [register组件](./src/views/auth/components/Register.vue)
   - [FormItem组件](./src/views/auth/components/FormItem.vue)
-  - [useCaptcha封装公共函数](./src/views/auth/composables)
+  - [useCode封装公共函数](./src/views/auth/composables)
   - [form.scss公共表格样式](./src/views/auth/style/form.scss)
 
 ## 三、组件开发
@@ -285,5 +285,5 @@ app.use(toastPlugin);
 - [emailApi文件](./src/apis/emailApi.js)
 
 ## 五、Pinia 的 Store
-### 1. 创建 src/stores/captchaStore.js
-- [captchaStore文件](./src/stores/captchaStore.js)  
+### 1. 创建 src/stores/codeStore.js
+- [codeStore文件](./src/stores/codeStore.js)  

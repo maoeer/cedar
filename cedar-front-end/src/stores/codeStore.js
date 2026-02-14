@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia';
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref } from 'vue';
 
 const DURATION = 60; // 60秒倒计时
 
-export const useCaptchaStore = defineStore('captcha', () => {
+export const useCodeStore = defineStore('code', () => {
   // 发送验证码的时间戳
   const emailSendStartTime = ref(0);
   // 剩余秒数
@@ -65,7 +65,7 @@ export const useCaptchaStore = defineStore('captcha', () => {
   };
 
   // 重置倒计时
-  const resetEmailCaptcha = () => {
+  const resetEmailCode = () => {
     emailSendStartTime.value = 0;
     emailRemainSeconds.value = 0;
     clearCountdownTimer();
@@ -75,7 +75,7 @@ export const useCaptchaStore = defineStore('captcha', () => {
     emailSendStartTime,
     emailRemainSeconds,
     setEmailSendTime,
-    resetEmailCaptcha,
+    resetEmailCode,
     initCountdown,
     clearCountdownTimer
   };

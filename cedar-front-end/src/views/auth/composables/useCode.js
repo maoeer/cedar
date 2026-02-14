@@ -1,16 +1,16 @@
 import { ref } from 'vue';
-import { useCaptchaStore } from '@/stores/captchaStore';
-import { sendEmailCaptcha } from '@/apis/emailApi';
+import { useCodeStore } from '@/stores/codeStore';
+import { sendEmailCode } from '@/apis/emailApi';
 import { showToast } from '@/components/Toast/toastPlugin';
 
-export const useCaptcha = (formType = 'login') => {
+export const useCode = (formType = 'login') => {
   // 获取验证码store
-  const captchaStore = useCaptchaStore();
+  const codeStore = useCodeStore();
 
   // 表单数据
   const form = ref({
     email: '',
-    captcha: '',
+    code: '',
   });
 
   if (formType === 'register') {
@@ -19,7 +19,7 @@ export const useCaptcha = (formType = 'login') => {
   }
 
   // 发送验证码方法
-  const handleSendCaptcha = async () => {
+  const handleSendCode = async () => {
     // 校验邮箱为空
     if (!form.value.email) {
       showToast('请输入邮箱');
@@ -27,16 +27,16 @@ export const useCaptcha = (formType = 'login') => {
     }
 
     // 校验倒计时未结束
-    if (captchaStore.emailRemainSeconds > 0) {
+    if (codeStore.emailRemainSeconds > 0) {
       showToast('请勿重复发送验证码');
       return;
     }
 
     try {
       // 触发倒计时
-      captchaStore.setEmailSendTime();
+      codeStore.setEmailSendTime();
       // 调用发送验证码接口
-      await sendEmailCaptcha(form.value.email);
+      await sendEmailCode(form.value.email);
       showToast('验证码发送成功');
     } catch (error) {
       showToast('验证码发送失败，请重试');
@@ -51,7 +51,7 @@ export const useCaptcha = (formType = 'login') => {
       return false;
     }
 
-    if (!form.value.captcha) {
+    if (!form.value.code) {
       showToast('请输入验证码');
       return false;
     }
@@ -75,7 +75,7 @@ export const useCaptcha = (formType = 'login') => {
   const resetForm = () => {
     form.value = ref({
       email: '',
-      captcha: '',
+      code: '',
     });
 
     if (formType === 'register') {
@@ -84,12 +84,12 @@ export const useCaptcha = (formType = 'login') => {
     }
 
     // 重置倒计时
-    captchaStore.resetEmailCaptcha();
+    codeStore.resetEmailCode();
   }
 
   return {
     form,
-    handleSendCaptcha,
+    handleSendCode,
     validateForm,
     resetForm
   }

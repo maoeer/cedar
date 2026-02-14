@@ -1,19 +1,19 @@
 <script setup>
 import Tab from './components/Tab.vue';
 import { onMounted, onUnmounted } from 'vue';
-import { useCaptchaStore } from '@/stores/captchaStore';
+import { useCodeStore } from '@/stores/codeStore';
 
-// 初始化 captchaStore
-const captchaStore = useCaptchaStore();
+// 初始化 codeStore
+const codeStore = useCodeStore();
 
 // 组件挂载：初始化倒计时（恢复持久化的倒计时状态）
 onMounted(() => {
-  captchaStore.initCountdown();
+  codeStore.initCountdown();
 });
 
 // 组件卸载：清理定时器（避免内存泄漏）
 onUnmounted(() => {
-  captchaStore.clearCountdownTimer();
+  codeStore.clearCountdownTimer();
 });
 </script>
 

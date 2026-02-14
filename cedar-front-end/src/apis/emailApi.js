@@ -1,7 +1,7 @@
 import axios from '@/utils/request';
 
 // 发送邮箱
-export const sendEmailCaptcha = async (email) => {
+export const sendEmailCode = async (email) => {
   if (!email) {
     throw new Error('邮箱不能为空');
   }
