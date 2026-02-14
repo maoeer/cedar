@@ -1,9 +1,9 @@
 <script setup>
 import FormItem from './FormItem.vue';
-import { useCaptcha } from '../composables/useCaptcha';
+import { useCode } from '../composables/useCode';
 import '../style/form.scss';
 
-const { form, handleSendCaptcha, validateForm } = useCaptcha();
+const { form, handleSendCode, validateForm } = useCode();
 
 // 处理登录逻辑
 const handleLogin = (e) => {
@@ -26,13 +26,13 @@ const handleLogin = (e) => {
       placeholder="请输入邮箱"/>
 
     <FormItem
-      v-model="form.captcha"
+      v-model="form.code"
       label="验证码"
-      id="captcha"
-      name="captcha"
+      id="code"
+      name="code"
       placeholder="请输入验证码"
-      isCaptcha
-      @sendCaptcha="handleSendCaptcha"/>
+      isCode
+      @sendCode="handleSendCode"/>
 
     <button class="form-submit-btn" @click="handleLogin">登录</button>
   </form>

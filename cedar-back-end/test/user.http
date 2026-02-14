@@ -1,3 +1,12 @@
 ### 获取全部用户列表
 GET http://localhost:3000/api/user
 Content-Type: application/json; charset=utf-8
+
+### 登录接口
+POST http://localhost:3000/api/user/login
+Content-Type: application/json; charset=utf-8
+
+{
+  "email": "3665043258@qq.com",
+  "code": "123456"
+}

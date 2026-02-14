@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue';
-import { useCaptchaStore } from '@/stores/captchaStore';
+import { useCodeStore } from '@/stores/codeStore';
 
 defineProps({
   label: {
@@ -22,7 +22,7 @@ defineProps({
     type: String,
     default: 'text'
   },
-  isCaptcha: {
+  isCode: {
     type: Boolean,
     default: false
   },
@@ -32,22 +32,22 @@ defineProps({
   }
 });
 
-const emit = defineEmits(['sendCaptcha', 'update:modelValue']);
+const emit = defineEmits(['sendCode', 'update:modelValue']);
 
-const captchaStore = useCaptchaStore();
+const codeStore = useCodeStore();
 
 // 按钮文案逻辑
 const captchBtnText = computed(() => {
-  const remian = captchaStore.emailRemainSeconds;
+  const remian = codeStore.emailRemainSeconds;
   return remian > 0 
     ? `${remian}s后重新获取` 
     : '获取验证码';
 });
      
-const handleSendCaptcha = (e) => {
+const handleSendCode = (e) => {
   e.preventDefault();
-  if (captchaStore.emailRemainSeconds > 0) return;
-  emit('sendCaptcha');
+  if (codeStore.emailRemainSeconds > 0) return;
+  emit('sendCode');
 };
 
 const handleInput = (e) => {
@@ -60,7 +60,7 @@ const handleInput = (e) => {
     <label :for="id">{{ label }}</label>
 
     <input 
-      v-if="!isCaptcha"
+      v-if="!isCode"
       :type="type"
       :placeholder="placeholder"
       :id="id"
@@ -68,7 +68,7 @@ const handleInput = (e) => {
       :value="modelValue"
       @input="handleInput">
 
-    <div v-else class="form-item-captcha">
+    <div v-else class="form-item-code">
       <input
         type="text"
         :placeholder="placeholder"
@@ -78,8 +78,8 @@ const handleInput = (e) => {
         @input="handleInput">
 
       <button 
-        :disabled="captchaStore.emailRemainSeconds > 0"
-        @click="handleSendCaptcha">
+        :disabled="codeStore.emailRemainSeconds > 0"
+        @click="handleSendCode">
         {{ captchBtnText }}
       </button>
     </div>  
@@ -105,7 +105,7 @@ const handleInput = (e) => {
   }
 
   // 表单验证码
-  .form-item-captcha {
+  .form-item-code {
     display: flex;
     align-items: center;
     gap: 10px;
