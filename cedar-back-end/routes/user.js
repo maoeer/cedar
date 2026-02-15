@@ -21,7 +21,7 @@ router.get('/', async (req, res) => {
 });
 
 // 用户登录
-router.post('/login', async () => {
+router.post('/login', async (req, res) => {
   try {
     const { email, code } = req.body || {};
 

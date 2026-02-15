@@ -1,6 +1,6 @@
 <script setup>
 import FormItem from './FormItem.vue';
-import { useCode } from '../composables/useCode';
+import { useCode } from '../composables/useForm';
 import '../style/form.scss';
 
 const { form, handleSendCode, validateForm } = useCode();
