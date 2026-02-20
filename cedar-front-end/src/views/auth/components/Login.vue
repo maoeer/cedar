@@ -1,9 +1,9 @@
 <script setup>
 import FormItem from './FormItem.vue';
-import { useCode } from '../composables/useCode';
+import { useForm } from '../composables/useForm';
 import '../style/form.scss';
 
-const { form, handleSendCode, validateForm } = useCode();
+const { form, handleSendCode, validateForm } = useForm();
 
 // 处理登录逻辑
 const handleLogin = (e) => {
