@@ -3,7 +3,7 @@ import { useCodeStore } from '@/stores/codeStore';
 import { sendEmailCode } from '@/apis/emailApi';
 import { showToast } from '@/components/Toast/toastPlugin';
 
-export const useCode = (formType = 'login') => {
+export const useForm = (formType = 'login') => {
   // 获取验证码store
   const codeStore = useCodeStore();
 
@@ -13,6 +13,7 @@ export const useCode = (formType = 'login') => {
     code: '',
   });
 
+  // 判断是否为注册表单
   if (formType === 'register') {
     form.value.password = '';
     form.value.confirmPassword = '';
@@ -86,6 +87,8 @@ export const useCode = (formType = 'login') => {
     // 重置倒计时
     codeStore.resetEmailCode();
   }
+
+  // 
 
   return {
     form,
