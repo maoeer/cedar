@@ -5,8 +5,6 @@ import { login, register } from '@/apis/authApi';
 import { showToast } from '@/components/Toast/toastPlugin';
 import { useRouter } from 'vue-router';
 
-
-
 export const useForm = (formType = 'login') => {
   // 获取验证码store
   const codeStore = useCodeStore();
@@ -144,6 +142,7 @@ export const useForm = (formType = 'login') => {
     handleSendCode,
     validateForm,
     resetForm,
-    handleLogin
+    handleLogin,
+    handleRegister
   }
 };
