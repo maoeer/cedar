@@ -3,16 +3,14 @@ import FormItem from './FormItem.vue';
 import { useForm } from '../composables/useForm';
 import '../style/form.scss';
 
-const { form, handleSendCode, validateForm } = useForm();
+const { form, handleSendCode, validateForm, handleLogin } = useForm();
 
 // 处理登录逻辑
-const handleLogin = (e) => {
+const login = (e) => {
   e.preventDefault();
 
-  // 表单校验
-  if (!validateForm()) return;
-
-  console.log('登录表单数据：', form.value);
+  // 登录处理
+  handleLogin();
 }
 </script>
 
@@ -34,7 +32,7 @@ const handleLogin = (e) => {
       isCode
       @sendCode="handleSendCode"/>
 
-    <button class="form-submit-btn" @click="handleLogin">登录</button>
+    <button class="form-submit-btn" @click="login">登录</button>
   </form>
 </template>
 

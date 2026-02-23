@@ -1,23 +1,35 @@
 import { ref } from 'vue';
 import { useCodeStore } from '@/stores/codeStore';
 import { sendEmailCode } from '@/apis/emailApi';
+import { login, register } from '@/apis/authApi';
 import { showToast } from '@/components/Toast/toastPlugin';
+import { useRouter } from 'vue-router';
 
 export const useForm = (formType = 'login') => {
   // 获取验证码store
   const codeStore = useCodeStore();
+  const router = useRouter();
+  const loading = ref(false);
 
   // 表单数据
   const form = ref({
     email: '',
     code: '',
+    /**
+     * 写法解析
+     * 利用 A && B 的短路特性 
+     * 
+     * 场景一：
+     * formType === 'register' 为 true，则展开 { password, confirmPassword }
+     * 
+     * 场景二：
+     * formType === 'register 为 false，则展开 false（无属性添加）
+     */
+    ...(formType === 'register' && {
+      password: '',
+      confirmPassword: ''
+    })
   });
-
-  // 判断是否为注册表单
-  if (formType === 'register') {
-    form.value.password = '';
-    form.value.confirmPassword = '';
-  }
 
   // 发送验证码方法
   const handleSendCode = async () => {
@@ -57,6 +69,7 @@ export const useForm = (formType = 'login') => {
       return false;
     }
 
+    // 注册表单额外校验
     if (formType === 'register') {
       if (!form.value.password) {
         showToast('请输入密码');
@@ -86,14 +99,50 @@ export const useForm = (formType = 'login') => {
 
     // 重置倒计时
     codeStore.resetEmailCode();
-  }
+  };
 
-  // 
+  // 登录处理
+  const handleLogin = async () => {
+    if (!validateForm()) return;
+    if (loading.value) return;
+
+    try {
+      loading.value = true;
+      const res = await login(form.value);
+      showToast('登录成功');
+      router.push('/home');
+    } catch (error) {
+      showToast(error.message || '登录失败');
+      console.error('登录失败', error);
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  // 注册处理
+  const handleRegister = async () => {
+    if (!validateForm()) return;
+    if (loading.value) return;
+
+    try {
+      loading.value = true;
+      const res = await register(form.value);
+      showToast('注册成功');
+      router.push('/auth/login');
+    } catch (error) {
+      showToast(error.message || '注册失败');
+      console.error('注册失败', error);
+    } finally {
+      loading.value = false;
+    }
+  };
 
   return {
     form,
     handleSendCode,
     validateForm,
-    resetForm
+    resetForm,
+    handleLogin,
+    handleRegister
   }
 };
