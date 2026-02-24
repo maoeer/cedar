@@ -1,7 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const { success, serverError, clientError } = require('../utils/response');
-const { db } = require('../db/index');
+const { db, generateID } = require('../db/index');
 const { verifyEmailCode } = require('../utils/emailService');
 const { generateToken } = require('../utils/jwtService');
 
@@ -129,7 +129,7 @@ router.post('/register', async (req, res) => {
 
     // 构造用户数据并写入数据库
     const newUser = {
-      id: Date.now().toString(),
+      id: generateID(),
       email: email.trim(),
       password: hashedPassword,
       createTime: new Date().toISOString()
