@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { useUserStore } from '@/stores/userStore';
 
 const service = axios.create({
   baseURL: 'http://localhost:3000/api', 
@@ -11,6 +12,12 @@ const service = axios.create({
 // 请求拦截器
 service.interceptors.request.use(
   (config) => {
+    // 获取 token 并添加到请求头
+    const userStore = useUserStore();
+    if (userStore.token) {
+      config.headers.Authorization = `Bearer ${userStore.token}`;
+    }
+
     return config;
   },
   (error) => {
@@ -36,6 +43,8 @@ service.interceptors.response.use(
     return Promise.reject(new Error(res.msg || '未知错误'));
   },
   (error) => {
+    // if (error.response?.status)
+
     return Promise.reject(error);
   }
 );
