@@ -1,5 +1,6 @@
 import { ref } from 'vue';
 import { useCodeStore } from '@/stores/codeStore';
+import { useUserStore } from '@/stores/userStore'; 
 import { sendEmailCode } from '@/apis/emailApi';
 import { login, register } from '@/apis/authApi';
 import { showToast } from '@/components/Toast/toastPlugin';
@@ -8,6 +9,7 @@ import { useRouter } from 'vue-router';
 export const useForm = (formType = 'login') => {
   // 获取验证码store
   const codeStore = useCodeStore();
+  const userStore = useUserStore();
   const router = useRouter();
   const loading = ref(false);
 
@@ -109,6 +111,7 @@ export const useForm = (formType = 'login') => {
     try {
       loading.value = true;
       const res = await login(form.value);
+      userStore.setUser(res);
       showToast('登录成功');
       router.push('/home');
     } catch (error) {

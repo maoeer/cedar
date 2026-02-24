@@ -3,16 +3,14 @@ import FormItem from './FormItem.vue';
 import { useForm } from '../composables/useForm';
 import '../style/form.scss';
 
-const { form, handleSendCode, validateForm } = useForm('register');
+const { form, handleSendCode, handleRegister } = useForm('register');
 
 // 处理注册逻辑
-const handleRegister = (e) => {
+const handleRegisterSubmit = (e) => {
   e.preventDefault();
 
-  // 表单校验
-  if (!validateForm()) return;
-
-  console.log('注册表单数据：', form.value);
+ // 2. 调用注册核心方法
+  handleRegister();
 };
 </script>
 
@@ -53,7 +51,7 @@ const handleRegister = (e) => {
       isCode
       @sendCode="handleSendCode"
     />
-    <button class="form-submit-btn" @click="handleRegister">注册</button>
+    <button class="form-submit-btn" @click="handleRegisterSubmit">注册</button>
   </form>
 </template>
 
