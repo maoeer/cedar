@@ -1,8 +1,8 @@
 import { ref } from 'vue';
 import { useCodeStore } from '@/stores/codeStore';
-import { useUserStore } from '@/stores/userStore'; 
+import { useUserStore } from '@/stores/userStore';
 import { sendEmailCode } from '@/apis/emailApi';
-import { login, register } from '@/apis/authApi';
+import { login, register } from '@/apis/userApi';
 import { showToast } from '@/components/Toast/toastPlugin';
 import { useRouter } from 'vue-router';
 
@@ -34,7 +34,7 @@ export const useForm = (formType = 'login') => {
   });
 
   // 发送验证码方法
-  const handleSendCode = async () => {
+  const handleSendCode = async (scene = 'login') => {
     // 校验邮箱为空
     if (!form.value.email) {
       showToast('请输入邮箱');
@@ -51,11 +51,17 @@ export const useForm = (formType = 'login') => {
       // 触发倒计时
       codeStore.setEmailSendTime();
       // 调用发送验证码接口
-      await sendEmailCode(form.value.email);
+      await sendEmailCode({
+        email: form.value.email,
+        scene
+      });
       showToast('验证码发送成功');
     } catch (error) {
       showToast('验证码发送失败，请重试');
       console.error('发送验证码失败：', error);
+    } finally {
+      // 重置倒计时
+      codeStore.resetEmailCode();
     }
   };
 
@@ -110,9 +116,13 @@ export const useForm = (formType = 'login') => {
 
     try {
       loading.value = true;
+
       const res = await login(form.value);
+      // 存储用户信息
       userStore.setUser(res);
       showToast('登录成功');
+      
+      // 跳转到主页
       router.push('/home');
     } catch (error) {
       showToast(error.message || '登录失败');
@@ -134,7 +144,7 @@ export const useForm = (formType = 'login') => {
       router.push('/auth/login');
     } catch (error) {
       showToast(error.message || '注册失败');
-      console.error('注册失败', error);
+      console.error('注册失败', error.message);
     } finally {
       loading.value = false;
     }

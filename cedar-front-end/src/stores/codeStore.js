@@ -76,8 +76,8 @@ export const useCodeStore = defineStore('code', () => {
     emailRemainSeconds,
     setEmailSendTime,
     resetEmailCode,
-    initCountdown,
-    clearCountdownTimer
+    initCountdown
+    // clearCountdownTimer
   };
 }, {
   persist: {

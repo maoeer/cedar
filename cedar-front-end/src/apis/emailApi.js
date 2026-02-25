@@ -1,7 +1,7 @@
 import request from '@/utils/request';
 
 // 发送邮箱
-export const sendEmailCode = async (email) => {
+export const sendEmailCode = async ({ email, scene }) => {
   if (!email) {
     throw new Error('邮箱不能为空');
   }
@@ -13,7 +13,7 @@ export const sendEmailCode = async (email) => {
   }
 
   try {
-    const res = await request.post('/email/get-code', { email });
+    const res = await request.post('/email/get-code', { email, scene });
     console.log(res);
     return res;
   } catch (error) {

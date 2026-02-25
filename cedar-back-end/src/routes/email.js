@@ -10,7 +10,12 @@ const router = express.Router();
 router.post('/get-code', async (req, res) => {
   try {
     // 校验邮箱
-    const { email } = req.body;
+    const { email, scene } = req.body;
+    const validScene = ['register', 'login', 'forget'];
+    // 非有效场景为 login 场景
+    const finalScene = validScene.includes(scene) ? scene : 'login';
+
+    // 校验邮箱非空
     if (!email) {
       return clientError(res, '请传入邮箱地址');
     }
@@ -19,10 +24,19 @@ router.post('/get-code', async (req, res) => {
     await db.read();
     const users = db.data?.users || [];
     const existingUser = users.find(user => user.email === email);
-    if (!existingUser) {
-      return clientError(res, '该邮箱尚未注册');
-    }
 
+    // register 场景，邮箱必须非注册
+    if (finalScene === validScene[0]) {
+      if (existingUser) {
+        return clientError(res, '该邮箱已注册，请勿重复注册');
+      }
+    } else {
+      // login/forget 场景：邮箱必须已经注册
+       if (!existingUser) {
+        return clientError(res, '该邮箱尚未注册');
+      }
+    }
+    
     // 发送验证码
     const result = await sendEmailVerifyCode(email);
 
@@ -55,7 +69,7 @@ router.post('/verify-code', (req, res) => {
     if (!/^\d{6}$/.test(verifyCode)) {
       return clientError(res, '验证码格式错误');
     }
-    
+
     // 校验验证码是否正确
     const result = verifyEmailCode(email, verifyCode);
     if (!result.success) {

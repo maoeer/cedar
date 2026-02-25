@@ -13,7 +13,7 @@ onMounted(() => {
 
 // 组件卸载：清理定时器（避免内存泄漏）
 onUnmounted(() => {
-  codeStore.clearCountdownTimer();
+  codeStore.resetEmailCode();
 });
 </script>
 

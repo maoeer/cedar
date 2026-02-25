@@ -1,2 +1,10 @@
 {
+  "users": [
+    {
+      "id": "1772005902498666025",
+      "email": "3665043258@qq.com",
+      "password": "$2b$10$5sZkFrrt6crT9sDLvzzlxeyw1TNMp2DMa0GZxt5nq.vSS8Nw38YLK",
+      "createTime": "2026-02-25 15:51:42"
+    }
+  ]
 }

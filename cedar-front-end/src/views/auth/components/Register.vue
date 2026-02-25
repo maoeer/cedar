@@ -25,6 +25,16 @@ const handleRegisterSubmit = (e) => {
     />
     
     <FormItem
+      v-model="form.code"
+      label="验证码"
+      id="code"
+      name="code"
+      placeholder="请输入验证码"
+      isCode
+      @sendCode="handleSendCode('register')"
+    />
+
+    <FormItem
       v-model="form.password"
       label="密码"
       id="password"
@@ -42,15 +52,6 @@ const handleRegisterSubmit = (e) => {
       type="password"
     />
 
-    <FormItem
-      v-model="form.code"
-      label="验证码"
-      id="code"
-      name="code"
-      placeholder="请输入验证码"
-      isCode
-      @sendCode="handleSendCode"
-    />
     <button class="form-submit-btn" @click="handleRegisterSubmit">注册</button>
   </form>
 </template>

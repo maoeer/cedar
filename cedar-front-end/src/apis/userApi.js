@@ -1,10 +1,12 @@
+import request from '@/utils/request';
+
 /**
  * 登录接口
  * @param {Object} form - 登录表单（邮箱、验证码）
  * @returns {Promise} 
  */
 export const login = (form) => {
-  return request.post('/auth/login', {
+  return request.post('/user/login', {
     email: form.email,
     code: form.code
   })
@@ -16,7 +18,7 @@ export const login = (form) => {
  * @returns {Promise}
  */
 export const register = (form) => {
-  return request.post('/auth/register', {
+  return request.post('/user/register', {
     email: form.email,
     code: form.code,
     password: form.password,
