@@ -1,44 +1,27 @@
 <script setup>
 import FormItem from './FormItem.vue';
-import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useCodeStore } from '@/stores/codeStore';
 import { useUserStore } from '@/stores/userStore';
-import { useForm } from '../composables/useForm';
+import { useLogin  } from '../composables/useLogin';
 import '../style/form.scss';
-
-const validScenes = ['login-code', 'login-password'];
-const currentScene = ref(validScenes[0]);
 
 const codeStore = useCodeStore();
 const userStore = useUserStore();
 const router = useRouter();
 
-const formInstance = computed(() => useForm(
-  currentScene.value, 
-  { codeStore, userStore, router } // 把外部获取的实例传进去
-));
-const form = computed(() => formInstance.value.form);
-const handleSendCode = computed(() => formInstance.value.handleSendCode);
-const sceneText = computed(() => currentScene.value === validScenes[0] 
-  ? '密码登录' 
-  : '验证码登录'
-);
+// 初始化登录逻辑
+const {
+  currentScene,
+  form,
+  toggleScene,
+  sendLoginCode,
+  handleLogin,
+  LOGIN_SCENES
+} = useLogin({ codeStore, userStore, router });
 
-// 切换场景
-const changeScene = () => {
-  currentScene.value = currentScene.value === validScenes[0] 
-    ? validScenes[1] 
-    : validScenes[0];
-};
-
-// 处理登录逻辑
-const handleLogin = (e) => {
-  e.preventDefault();
-
-  // 登录处理
-   formInstance.value.handleSubmit();
-};
+// 场景文案
+const sceneText = () => currentScene.value === LOGIN_SCENES.CODE ? '密码登录' : '验证码登录';
 </script>
 
 <template>
@@ -51,17 +34,17 @@ const handleLogin = (e) => {
       placeholder="请输入邮箱"/>
 
     <FormItem
-      v-if="currentScene === validScenes[0]"
+      v-if="currentScene === LOGIN_SCENES.CODE"
       v-model="form.code"
       label="验证码"
       id="code"
       name="code"
       placeholder="请输入验证码"
       isCode
-      @sendCode="handleSendCode"/>
+      @sendCode="sendLoginCode"/>
 
     <FormItem
-      v-if="currentScene === validScenes[1]"
+      v-if="currentScene === LOGIN_SCENES.PASSWORD"
       v-model="form.password"
       label="密码"
       id="password"
@@ -72,7 +55,7 @@ const handleLogin = (e) => {
   </form>
 
   <div class="sceneText" >
-    <span @click="changeScene">使用{{ sceneText }}</span>
+    <span @click="toggleScene">使用{{ sceneText() }}</span>
   </div>
 </template>
 

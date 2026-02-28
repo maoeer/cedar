@@ -134,18 +134,18 @@ router.post('/register', async (req, res) => {
       return clientError(res, '两次输入的密码不一致，请重新输入');
     }
 
+    // 校验验证码是否有效
+    const codeVerifyResult = verifyEmailCode(email, verifyCode);
+    if (!codeVerifyResult.success) {
+      return clientError(res, codeVerifyResult.message);
+    }
+
     // 校验邮箱是否已注册
     await db.read();
     const users = db.data?.users || [];
     const existingUser = users.find(user => user.email === email);
     if (existingUser) {
       return clientError(res, '该邮箱已注册');
-    }
-
-    // 校验验证码是否有效
-    const codeVerifyResult = verifyEmailCode(email, verifyCode);
-    if (!codeVerifyResult.success) {
-      return clientError(res, codeVerifyResult.message);
     }
 
     // 密码加密

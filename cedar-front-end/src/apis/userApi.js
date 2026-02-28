@@ -8,7 +8,8 @@ import request from '@/utils/request';
 export const login = (form) => {
   return request.post('/user/login', {
     email: form.email,
-    code: form.code
+    code: form.code,
+    scene: form.scene
   })
 };
 
