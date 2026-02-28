@@ -11,9 +11,9 @@ router.post('/get-code', async (req, res) => {
   try {
     // 校验邮箱
     const { email, scene } = req.body;
-    const validScene = ['register', 'login', 'forget'];
-    // 非有效场景为 login 场景
-    const finalScene = validScene.includes(scene) ? scene : 'login';
+    const validScenes = ['login-code', 'register'];
+    // 非有效场景
+    const finalScene = validScenes.includes(scene) ? scene : validScenes[0];
 
     // 校验邮箱非空
     if (!email) {
@@ -26,7 +26,7 @@ router.post('/get-code', async (req, res) => {
     const existingUser = users.find(user => user.email === email);
 
     // register 场景，邮箱必须非注册
-    if (finalScene === validScene[0]) {
+    if (finalScene === validScenes[1]) {
       if (existingUser) {
         return clientError(res, '该邮箱已注册，请勿重复注册');
       }

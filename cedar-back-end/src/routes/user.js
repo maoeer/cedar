@@ -29,7 +29,8 @@ router.post('/login', async (req, res) => {
 
     // 校验 scene 
     const validScenes = ['password', 'code'];
-    const finalScene = validScenes.includes(scene) ? scene : 'code'
+    // （兜底）如果 scene 不合法，则采用 password 密码登录方式登录
+    const finalScene = validScenes.includes(scene) ? scene : validScenes[0];
 
     // 校验邮箱格式
     if (!email) {

@@ -1,29 +1,48 @@
 <script setup>
 import FormItem from './FormItem.vue';
 import { ref, computed } from 'vue';
+import { useRouter } from 'vue-router';
+import { useCodeStore } from '@/stores/codeStore';
+import { useUserStore } from '@/stores/userStore';
 import { useForm } from '../composables/useForm';
 import '../style/form.scss';
 
-const { form, handleSendCode, handleLogin } = useForm();
-const scene = ref('code');
-const sceneText = computed(() => scene.value === 'code' ? '密码登录' : '验证码登录');
+const validScenes = ['login-code', 'login-password'];
+const currentScene = ref(validScenes[0]);
 
-// 切换 Scene
-const changeScene = () => { 
-  scene.value = scene.value === 'code' ? 'password' : 'code'; 
-}
+const codeStore = useCodeStore();
+const userStore = useUserStore();
+const router = useRouter();
+
+const formInstance = computed(() => useForm(
+  currentScene.value, 
+  { codeStore, userStore, router } // 把外部获取的实例传进去
+));
+const form = computed(() => formInstance.value.form);
+const handleSendCode = computed(() => formInstance.value.handleSendCode);
+const sceneText = computed(() => currentScene.value === validScenes[0] 
+  ? '密码登录' 
+  : '验证码登录'
+);
+
+// 切换场景
+const changeScene = () => {
+  currentScene.value = currentScene.value === validScenes[0] 
+    ? validScenes[1] 
+    : validScenes[0];
+};
 
 // 处理登录逻辑
-const login = (e) => {
+const handleLogin = (e) => {
   e.preventDefault();
 
   // 登录处理
-  handleLogin();
-}
+   formInstance.value.handleSubmit();
+};
 </script>
 
 <template>
-  <form class="form">
+  <form class="form" @submit.prevent="handleLogin">
     <FormItem
       v-model="form.email"
       label="邮箱"
@@ -32,24 +51,24 @@ const login = (e) => {
       placeholder="请输入邮箱"/>
 
     <FormItem
-      v-if="scene === 'code'"
+      v-if="currentScene === validScenes[0]"
       v-model="form.code"
       label="验证码"
       id="code"
       name="code"
       placeholder="请输入验证码"
       isCode
-      @sendCode="handleSendCode('login')"/>
+      @sendCode="handleSendCode"/>
 
     <FormItem
-      v-if="scene === 'password'"
+      v-if="currentScene === validScenes[1]"
       v-model="form.password"
       label="密码"
       id="password"
       name="password"
       placeholder="请输入密码"/>
 
-    <button class="form-submit-btn" @click="login">登录</button>
+    <button class="form-submit-btn" type="submit">登录</button>
   </form>
 
   <div class="sceneText" >

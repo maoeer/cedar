@@ -1,21 +1,31 @@
 <script setup>
 import FormItem from './FormItem.vue';
 import { useForm } from '../composables/useForm';
+import { useCodeStore } from '@/stores/codeStore';
+import { useUserStore } from '@/stores/userStore';
+import { useRouter } from 'vue-router';
 import '../style/form.scss';
 
-const { form, handleSendCode, handleRegister } = useForm('register');
+const codeStore = useCodeStore();
+const userStore = useUserStore();
+const router = useRouter();
+
+const { form, handleSendCode, handleSubmit } = useForm(
+  'register', // 场景参数
+  { codeStore, userStore, router } // 传入外部获取的实例
+);
 
 // 处理注册逻辑
-const handleRegisterSubmit = (e) => {
+const handleRegister = (e) => {
   e.preventDefault();
 
  // 2. 调用注册核心方法
-  handleRegister();
+  handleSubmit();
 };
 </script>
 
 <template>
-  <form class="form">
+  <form class="form" @submit.prevent="handleRegister">
     <FormItem
       v-model="form.email"
       label="邮箱"
@@ -31,7 +41,7 @@ const handleRegisterSubmit = (e) => {
       name="code"
       placeholder="请输入验证码"
       isCode
-      @sendCode="handleSendCode('register')"
+      @sendCode="handleSendCode"
     />
 
     <FormItem
@@ -52,7 +62,7 @@ const handleRegisterSubmit = (e) => {
       type="password"
     />
 
-    <button class="form-submit-btn" @click="handleRegisterSubmit">注册</button>
+    <button class="form-submit-btn" type="submit">注册</button>
   </form>
 </template>
 

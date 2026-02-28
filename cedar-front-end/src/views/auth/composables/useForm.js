@@ -1,40 +1,35 @@
 import { ref } from 'vue';
-import { useCodeStore } from '@/stores/codeStore';
-import { useUserStore } from '@/stores/userStore';
 import { sendEmailCode } from '@/apis/emailApi';
 import { login, register } from '@/apis/userApi';
 import { showToast } from '@/components/Toast/toastPlugin';
-import { useRouter } from 'vue-router';
 
-export const useForm = (formType = 'login') => {
-  // 获取验证码store
-  const codeStore = useCodeStore();
-  const userStore = useUserStore();
-  const router = useRouter();
+// 使用表单的场景
+const validScenes = ['login-code', 'login-password', 'register'];
+
+export const useForm = (scene, { codeStore, userStore, router }) => {
+  console.log('当前场景:', scene);
+
+  // 校验场景参数
+  const currentScene = validScenes.includes(scene) ? scene : validScenes[0];
+
   const loading = ref(false);
 
-  // 表单数据
+  // 根据 currentScene 来拼接字段
   const form = ref({
     email: '',
-    code: '',
-    /**
-     * 写法解析
-     * 利用 A && B 的短路特性 
-     * 
-     * 场景一：
-     * formType === 'register' 为 true，则展开 { password, confirmPassword }
-     * 
-     * 场景二：
-     * formType === 'register 为 false，则展开 false（无属性添加）
-     */
-    ...(formType === 'register' && {
-      password: '',
-      confirmPassword: ''
-    })
+    ...(currentScene === validScenes[0] || currentScene === validScenes[2] ? { code: '' } : {}), // 验证码字段
+    ...(currentScene === validScenes[1] || currentScene === validScenes[2] ? { password: '' } : {}), // 密码字段
+    ...(currentScene === validScenes[2] ? { confirmPassword: '' } : {}) // 确认密码字段
   });
 
-  // 发送验证码方法
-  const handleSendCode = async (scene = 'login') => {
+  // 发送验证码方法（login-code/register场景可用）
+  const handleSendCode = async () => {
+    // 非验证码场景禁止调用
+     if (currentScene !== validScenes[0] && currentScene !== validScenes[2]) {
+      showToast('当前场景无需发送验证码');
+      return;
+    }
+
     // 校验邮箱为空
     if (!form.value.email) {
       showToast('请输入邮箱');
@@ -53,11 +48,11 @@ export const useForm = (formType = 'login') => {
       // 调用发送验证码接口
       await sendEmailCode({
         email: form.value.email,
-        scene
+        scene: currentScene
       });
       showToast('验证码发送成功');
     } catch (error) {
-      showToast(error.response.data.message);
+      showToast(error.response.data.message || '验证码发送失败');
       console.error(error);
     } finally {
       // 重置倒计时
@@ -72,22 +67,22 @@ export const useForm = (formType = 'login') => {
       return false;
     }
 
-    if (!form.value.code) {
+    // 验证码场景校验（login-code/register）
+    if ((currentScene === validScenes[0] || currentScene === validScenes[2]) && !form.value.code) {
       showToast('请输入验证码');
       return false;
     }
 
-    // 注册表单额外校验
-    if (formType === 'register') {
-      if (!form.value.password) {
-        showToast('请输入密码');
-        return false;
-      }
+    // 密码场景校验（login-password/register）
+    if ((currentScene === validScenes[1] || currentScene === validScenes[2]) && !form.value.password) {
+      showToast('请输入密码');
+      return false;
+    }
 
-      if (form.value.password !== form.value.confirmPassword) {
-        showToast('两次密码输入不一致');
-        return false;
-      }
+    // 注册表单额外校验
+    if (currentScene === validScenes[2] && form.value.password !== form.value.confirmPassword) {
+      showToast('两次密码输入不一致');
+      return false;
     }
 
     return true;
@@ -95,56 +90,64 @@ export const useForm = (formType = 'login') => {
 
   // 重置表单
   const resetForm = () => {
-    form.value = ref({
-      email: '',
-      code: '',
-    });
+    form.value = { email: '' };
 
-    if (formType === 'register') {
+    if (currentScene === validScenes[0] || currentScene === validScenes[2]) {
+      form.value.code = '';
+    }
+    if (currentScene === validScenes[1] || currentScene === validScenes[2]) {
       form.value.password = '';
+    }
+    if (currentScene === validScenes[2]) {
       form.value.confirmPassword = '';
     }
 
-    // 重置倒计时
+    // 重置验证码倒计时
     codeStore.resetEmailCode();
   };
 
-  // 登录处理
-  const handleLogin = async () => {
+  // 统一提交：根据 currentScene 区分
+  const handleSubmit = async () => {
     if (!validateForm()) return;
     if (loading.value) return;
 
     try {
       loading.value = true;
 
-      const res = await login(form.value);
+      // 注册场景
+      if (currentScene === validScenes[2]) {
+        await register(form.value);
+        showToast('注册成功');
+        router.push('/auth/login');
+        return;
+      }
+
+      // 登录场景：区分验证码/密码登录
+      let loginParams = { email: form.value.email };
+      if (currentScene === validScenes[0]) {
+        // 验证码登录
+        loginParams.code = form.value.code;
+      } else if (currentScene === validScenes[1]) {
+        // 密码登录
+        loginParams.password = form.value.password;
+      }
+
+      // 调用登录接口
+      const res = await login(loginParams);
       // 存储用户信息
       userStore.setUser(res);
       showToast('登录成功');
-      
       // 跳转到主页
       router.push('/home');
     } catch (error) {
-      showToast(error.message || '登录失败');
-      console.error('登录失败', error);
-    } finally {
-      loading.value = false;
-    }
-  };
-
-  // 注册处理
-  const handleRegister = async () => {
-    if (!validateForm()) return;
-    if (loading.value) return;
-
-    try {
-      loading.value = true;
-      const res = await register(form.value);
-      showToast('注册成功');
-      router.push('/auth/login');
-    } catch (error) {
-      showToast(error.message || '注册失败');
-      console.error('注册失败', error.message);
+      // 按场景定制错误提示
+       const errorMsgMap = {
+        [validScenes[0]]: '验证码错误或已过期',
+        [validScenes[1]]: '密码错误',
+        [validScenes[2]]: '注册失败'
+      };
+      showToast(error.response.data.message || errorMsgMap[currentScene]);
+      console.error(error);
     } finally {
       loading.value = false;
     }
@@ -155,7 +158,6 @@ export const useForm = (formType = 'login') => {
     handleSendCode,
     validateForm,
     resetForm,
-    handleLogin,
-    handleRegister
+    handleSubmit
   }
 };
