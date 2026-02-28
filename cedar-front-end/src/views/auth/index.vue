@@ -23,7 +23,7 @@ onUnmounted(() => {
       <header>
         <div class="logo"></div>
         <h1>欢迎回来</h1>
-        <p>使用验证码登录您的账户</p>
+        <p>使用您的账户进行登录</p>
       </header>
     
       <main>

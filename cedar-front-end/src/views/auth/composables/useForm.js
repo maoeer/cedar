@@ -57,8 +57,8 @@ export const useForm = (formType = 'login') => {
       });
       showToast('验证码发送成功');
     } catch (error) {
-      showToast('验证码发送失败，请重试');
-      console.error('发送验证码失败：', error);
+      showToast(error.response.data.message);
+      console.error(error);
     } finally {
       // 重置倒计时
       codeStore.resetEmailCode();

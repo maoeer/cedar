@@ -6,9 +6,7 @@ import '../style/form.scss';
 
 const { form, handleSendCode, handleLogin } = useForm();
 const scene = ref('code');
-const sceneText = computed(() => {
-  return scene.value === 'code' ? '密码登录' : '验证码登录'
-});
+const sceneText = computed(() => scene.value === 'code' ? '密码登录' : '验证码登录');
 
 // 切换 Scene
 const changeScene = () => { 
@@ -55,7 +53,7 @@ const login = (e) => {
   </form>
 
   <div class="sceneText" >
-    <span @click="changeScene">{{ sceneText }}</span>
+    <span @click="changeScene">使用{{ sceneText }}</span>
   </div>
 </template>
 
@@ -64,5 +62,7 @@ const login = (e) => {
   cursor: pointer;
   text-align: center;
   color: $primary-color;
+  margin-top: 20px;
+  font-size: 14px;
 }
 </style>

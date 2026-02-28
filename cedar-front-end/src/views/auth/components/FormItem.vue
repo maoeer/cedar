@@ -122,6 +122,8 @@ const handleInput = (e) => {
       border-radius: 12px;
       min-width: 120px;
       font-weight: 600;
+      color: $primary-color;
+      background: $primary-light;
     }
   }
 }

@@ -18,7 +18,7 @@ export const useCodeStore = defineStore('code', () => {
       return;
     }
 
-    // 已流逝时间 = (当前时间 - 发送时间) / 1000（转秒）
+    // 已流逝时间 = (当前时间 - 发送时间) / 1000（毫秒转秒）
     const elapsed = Math.floor((Date.now() - emailSendStartTime.value) / 1000);
     // 剩余时间 = 60 - 已流逝时间（最小为0）
     const remain = DURATION - elapsed;
@@ -50,7 +50,7 @@ export const useCodeStore = defineStore('code', () => {
     startCountdown();
   };
 
-  // 初始化
+  // 每次页面刷新都会初始化，避免刷新倒计时丢失
   const initCountdown = () => {
     calculateRemainSeconds();
     startCountdown();
@@ -77,7 +77,6 @@ export const useCodeStore = defineStore('code', () => {
     setEmailSendTime,
     resetEmailCode,
     initCountdown
-    // clearCountdownTimer
   };
 }, {
   persist: {
