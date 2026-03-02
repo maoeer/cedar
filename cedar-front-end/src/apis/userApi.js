@@ -9,7 +9,8 @@ export const login = (form) => {
   return request.post('/user/login', {
     email: form.email,
     code: form.code,
-    scene: form.scene
+    scene: form.scene,
+    password: form.password
   })
 };
 

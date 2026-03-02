@@ -1,5 +1,6 @@
 <script setup>
 import FormItem from './FormItem.vue';
+import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useCodeStore } from '@/stores/codeStore';
 import { useUserStore } from '@/stores/userStore';
@@ -21,7 +22,7 @@ const {
 } = useLogin({ codeStore, userStore, router });
 
 // 场景文案
-const sceneText = () => currentScene.value === LOGIN_SCENES.CODE ? '密码登录' : '验证码登录';
+const sceneText = computed(() => currentScene.value === LOGIN_SCENES.CODE ? '密码登录' : '验证码登录');
 </script>
 
 <template>
@@ -49,13 +50,14 @@ const sceneText = () => currentScene.value === LOGIN_SCENES.CODE ? '密码登录
       label="密码"
       id="password"
       name="password"
+      type="password"
       placeholder="请输入密码"/>
 
     <button class="form-submit-btn" type="submit">登录</button>
   </form>
 
   <div class="sceneText" >
-    <span @click="toggleScene">使用{{ sceneText() }}</span>
+    <span @click="toggleScene">使用{{ sceneText }}</span>
   </div>
 </template>
 
