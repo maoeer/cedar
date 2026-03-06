@@ -8,50 +8,31 @@ const DB_PATH = path.resolve(__dirname, process.env.DB_PATH || './db.json');
 // 指定 JSON 文件存储数据
 const adapter = new JSONFile(DB_PATH);
 // 数据库默认数据
-const defaultData = {};
+const defaultData = { users: [] };
 // 初始化 LowDB 数据库
 const db = new Low(adapter, defaultData);
-// 最大用户 id
-let maxUserId = 0;
 
 // 初始化数据库 
 const initDB = async () => {
   await db.read();
   console.log(`LowDB 数据库初始化成功！路径：${DB_PATH}`);
-
-  const users = db.data?.users || [];
-  // 无用户数据，从 0 开始自增
-  if (users.length <= 0) {
-    maxUserId = 0; 
-    return db;
-  }
-
-  // 最大 id 非正数，从 0 开始自增
-  const validIds = users
-    .map(user => user.id)
-    .filter(id => typeof id === 'number' && id > 0);
-  if (validIds.length <= 0) {
-    maxUserId = 0; 
-    return db;
-  }
-
- // 获取到最大的 userId
-  maxUserId = Math.max(...validIds);
   return db;
 };
 
-// 获得最大的 userId
-const getMaxUserId = () => maxUserId;
-// 赋值最大的 userId
-const setMaxUserId = (newId) => {
-  if (typeof newId === 'number' && newId > maxUserId) {
-    maxUserId = newId;
-  }
+// 生成纯数字 ID
+const generateID = () => {
+  // 13 位时间戳
+  const timestamp = Date.now().toString();
+  // 6 位随机数
+  const random = Math.floor(Math.random() * 1000000)
+    .toString()
+    .padStart(6, '0');
+  // 19 位纯数字
+  return timestamp + random;
 };
 
 module.exports = {
   db,
   initDB,
-  getMaxUserId,
-  setMaxUserId
+  generateID
 };

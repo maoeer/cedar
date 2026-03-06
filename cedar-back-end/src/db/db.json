@@ -1,14 +1,10 @@
 {
   "users": [
     {
-      "id": 1,
-      "username": "admin",
-      "email": "3665043258@qq.com"
-    },
-    {
-      "id": 2,
-      "username": "test",
-      "email": "2847544066@qq.com"
+      "id": "1772287020371103538",
+      "email": "3665043258@qq.com",
+      "password": "$2b$10$GjpY9ClmtPtsWKpJaDKL..3RrX3RNKWMhnkXkCj8G1PpZQTYjeLDy",
+      "createTime": "2026-02-28 21:57:00"
     }
   ]
 }

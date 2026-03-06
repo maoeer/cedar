@@ -1,28 +1,4 @@
-/**
- * 时间格式化工具：将时间戳转为 YYYY-MM-DD HH:mm:ss 格式
- * @param {Number} timestamp - 毫秒时间戳
- * @return {String} 格式化后的时间字符串
- */
-const formatTime = (timestamp = Date.now()) => {
-  const date = new Date(timestamp);
-
-  // 补零函数
-  const padZero = (num) => {
-    return num.toString().padStart(2, '0');
-  }
-
-  // 年月日
-  const year = date.getFullYear();
-  const month = padZero(date.getMonth() + 1);
-  const day = padZero(date.getDate());
-
-  // 时分秒
-  const hour = padZero(date.getHours());
-  const minute = padZero(date.getMinutes());
-  const second = padZero(date.getSeconds());
-
-  return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
-};
+const { formatTime } = require('./formatTime');
 
 // 状态码集合
 const statusMap = {
@@ -34,7 +10,14 @@ const statusMap = {
 }
 
 /**
- * 统一响应工具函数
+ * 统一返回格式：
+ * {
+ *  code: 200,
+ *  message: "操作成功",
+ *  data: { 数据 },
+ *  time: 2026-02-25 12:01:02,
+ *  error: "错误信息" 
+ * }
  */
 const sendResponse = (res, code, message, data, error = null) => {
   // 查询传入的 code 是否已定义
@@ -71,5 +54,6 @@ module.exports = {
   },
   serverError: (res, message, error) => {
     sendResponse(res, 500, message, null, error);
+    console.log(error)
   }
 };

@@ -1,7 +1,8 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const { success, serverError, clientError } = require('../utils/response');
-const { db } = require('../db/index');
+const { formatTime } = require('../utils/formatTime');
+const { db, generateID } = require('../db/index');
 const { verifyEmailCode } = require('../utils/emailService');
 const { generateToken } = require('../utils/jwtService');
 
@@ -24,17 +25,17 @@ router.get('/', async (req, res) => {
 // 用户登录
 router.post('/login', async (req, res) => {
   try {
-    const { email, password } = req.body || {};
+    const { email, code, password, scene } = req.body || {};
 
-    // 校验必要性
+    // 校验 scene 
+    const validScenes = ['password', 'code'];
+    // （兜底）如果 scene 不合法，则采用 password 密码登录方式登录
+    const finalScene = validScenes.includes(scene) ? scene : validScenes[0];
+
+    // 校验邮箱格式
     if (!email) {
       return clientError(res, '请传入登录邮箱');
     }
-    if (!password) {
-      return clientError(res, '请传入登录密码');
-    }
-
-    // 2. 校验邮箱格式
     const emailReg = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailReg.test(email)) {
       return clientError(res, '请传入有效的邮箱地址');
@@ -48,10 +49,34 @@ router.post('/login', async (req, res) => {
       return clientError(res, '该邮箱尚未注册');
     }
 
-    // 校验密码
-    const isPasswordValid = bcrypt.compareSync(password, existingUser.password);
-    if (!isPasswordValid) {
-      return clientError(res, '密码错误，请重新输入');
+    // 密码登录方式
+    if (finalScene === validScenes[0]) {
+      if (!password) {
+        return clientError(res, '请传入密码');
+      }
+
+      // 校验密码正确性
+      const isPasswordValid = bcrypt.compareSync(password, existingUser.password);
+      if (!isPasswordValid) {
+        return clientError(res, '密码错误，请重新输入');
+      }
+    } else {
+      // 验证码登录
+      if (!code) {
+        return clientError(res, '请传入验证码');
+      }
+
+      // 验证码格式校验
+      const verifyCode = String(code).trim();
+      if (!/^\d{6}$/.test(verifyCode)) {
+        return clientError(res, '请传入6位数字验证码');
+      }
+
+      // 校验验证码正确性
+      const codeVerifyResult = verifyEmailCode(email, verifyCode);
+      if (!codeVerifyResult.success) {
+        return clientError(res, codeVerifyResult.message);
+      }
     }
 
     // 生成 JWT 令牌
@@ -109,6 +134,12 @@ router.post('/register', async (req, res) => {
       return clientError(res, '两次输入的密码不一致，请重新输入');
     }
 
+    // 校验验证码是否有效
+    const codeVerifyResult = verifyEmailCode(email, verifyCode);
+    if (!codeVerifyResult.success) {
+      return clientError(res, codeVerifyResult.message);
+    }
+
     // 校验邮箱是否已注册
     await db.read();
     const users = db.data?.users || [];
@@ -117,22 +148,16 @@ router.post('/register', async (req, res) => {
       return clientError(res, '该邮箱已注册');
     }
 
-    // 校验验证码是否有效
-    const codeVerifyResult = verifyEmailCode(email, verifyCode);
-    if (!codeVerifyResult.success) {
-      return clientError(res, codeVerifyResult.message);
-    }
-
     // 密码加密
     const saltRounds = 10;
     const hashedPassword = bcrypt.hashSync(password, saltRounds);
 
     // 构造用户数据并写入数据库
     const newUser = {
-      id: Date.now().toString(),
+      id: generateID(),
       email: email.trim(),
       password: hashedPassword,
-      createTime: new Date().toISOString()
+      createTime: formatTime()
     };
 
     // 写入LowDB并持久化

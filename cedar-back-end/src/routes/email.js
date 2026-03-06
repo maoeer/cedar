@@ -10,7 +10,12 @@ const router = express.Router();
 router.post('/get-code', async (req, res) => {
   try {
     // 校验邮箱
-    const { email } = req.body;
+    const { email, scene } = req.body;
+    const validScenes = ['login-code', 'register'];
+    // 非有效场景
+    const finalScene = validScenes.includes(scene) ? scene : validScenes[0];
+
+    // 校验邮箱非空
     if (!email) {
       return clientError(res, '请传入邮箱地址');
     }
@@ -19,10 +24,19 @@ router.post('/get-code', async (req, res) => {
     await db.read();
     const users = db.data?.users || [];
     const existingUser = users.find(user => user.email === email);
-    if (!existingUser) {
-      return clientError(res, '该邮箱尚未注册');
-    }
 
+    // register 场景，邮箱必须非注册
+    if (finalScene === validScenes[1]) {
+      if (existingUser) {
+        return clientError(res, '该邮箱已注册，请勿重复注册');
+      }
+    } else {
+      // login/forget 场景：邮箱必须已经注册
+       if (!existingUser) {
+        return clientError(res, '该邮箱尚未注册');
+      }
+    }
+    
     // 发送验证码
     const result = await sendEmailVerifyCode(email);
 
@@ -38,37 +52,37 @@ router.post('/get-code', async (req, res) => {
 });
 
 // 校验验证码
-router.post('/verify-code', (req, res) => {
-  try {
-    const { email, code } = req.body || {};
+// router.post('/verify-code', (req, res) => {
+//   try {
+//     const { email, code } = req.body || {};
 
-    // 校验邮箱是否为空
-    if (!email) {
-      return clientError(res, '请传入接收验证码的邮箱地址');
-    }
-    // 校验验证码是否为空
-    if (!code) {
-      return clientError(res, '请传入6位验证码');
-    }
-    // 校验验证码格式
-    const verifyCode = String(code).trim();
-    if (!/^\d{6}$/.test(verifyCode)) {
-      return clientError(res, '验证码格式错误');
-    }
-    
-    // 校验验证码是否正确
-    const result = verifyEmailCode(email, verifyCode);
-    if (!result.success) {
-      return clientError(res, result.message);
-    }
+//     // 校验邮箱是否为空
+//     if (!email) {
+//       return clientError(res, '请传入接收验证码的邮箱地址');
+//     }
+//     // 校验验证码是否为空
+//     if (!code) {
+//       return clientError(res, '请传入6位验证码');
+//     }
+//     // 校验验证码格式
+//     const verifyCode = String(code).trim();
+//     if (!/^\d{6}$/.test(verifyCode)) {
+//       return clientError(res, '验证码格式错误');
+//     }
 
-    // 生成令牌
-    const token = generateToken(email);
+//     // 校验验证码是否正确
+//     const result = verifyEmailCode(email, verifyCode);
+//     if (!result.success) {
+//       return clientError(res, result.message);
+//     }
 
-    success(res, result.message, token);
-  } catch (err) {
-    serverError(res, '校验验证码异常', err.message);
-  }
-});
+//     // 生成令牌
+//     const token = generateToken(email);
+
+//     success(res, result.message, token);
+//   } catch (err) {
+//     serverError(res, '校验验证码异常', err.message);
+//   }
+// });
 
 module.exports = router;
