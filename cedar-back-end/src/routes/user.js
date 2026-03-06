@@ -28,7 +28,7 @@ router.post('/login', async (req, res) => {
     const { email, code, password, scene } = req.body || {};
 
     // 校验 scene 
-    const validScenes = ['password', 'code'];
+    const validScenes = ['login-password', 'login-code'];
     // （兜底）如果 scene 不合法，则采用 password 密码登录方式登录
     const finalScene = validScenes.includes(scene) ? scene : validScenes[0];
 

@@ -1,4 +1,4 @@
-const bcryt = require('bcryptjs');
+const bcrypt = require('bcryptjs');
 
 // 加盐轮数
 const SALT_ROUNDS = 10;
@@ -10,8 +10,8 @@ const SALT_ROUNDS = 10;
  */
 exports.encryptPassword = (password) => {
   // 生成盐 + 哈希密码
-  const salt = bcryt.genSaltSync(SALT_ROUNDS);
-  const hashPassword = bcryt.hashSync(password, salt);
+  const salt = bcrypt.genSaltSync(SALT_ROUNDS);
+  const hashPassword = bcrypt.hashSync(password, salt);
   return hashPassword;
 };
 
