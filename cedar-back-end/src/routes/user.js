@@ -1,10 +1,10 @@
 const express = require('express');
-const bcrypt = require('bcryptjs');
 const { success, serverError, clientError } = require('../utils/response');
 const { formatTime } = require('../utils/formatTime');
 const { db, generateID } = require('../db/index');
 const { verifyEmailCode } = require('../utils/emailService');
 const { generateToken } = require('../utils/jwtService');
+const { encryptPassword, verifyPassword } = require('../utils/crypto');
 
 // 创建路由实例
 const router = express.Router();
@@ -56,7 +56,7 @@ router.post('/login', async (req, res) => {
       }
 
       // 校验密码正确性
-      const isPasswordValid = bcrypt.compareSync(password, existingUser.password);
+      const isPasswordValid = verifyPassword(password, existingUser.password);
       if (!isPasswordValid) {
         return clientError(res, '密码错误，请重新输入');
       }
@@ -149,8 +149,7 @@ router.post('/register', async (req, res) => {
     }
 
     // 密码加密
-    const saltRounds = 10;
-    const hashedPassword = bcrypt.hashSync(password, saltRounds);
+    const hashedPassword = encryptPassword(password);
 
     // 构造用户数据并写入数据库
     const newUser = {

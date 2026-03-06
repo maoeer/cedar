@@ -1,5 +1,9 @@
 const nodemailer = require('nodemailer');
 
+// 存储验证码
+// 结构：{ toEmail: { code: 验证码（string）, expire: 过期时间（number） } }
+const emailCodeStore = {};
+
 // 配置邮件传输器
 const transporter = nodemailer.createTransport({
   host: 'smtp.qq.com',
@@ -11,17 +15,13 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-// 存储验证码
-// 结构：{ toEmail: { code: 验证码（string）, expire: 过期时间（number） } }
-const emailCodeStore = {};
-
 // 生成 6 位验证码
 const generateVerifyCode = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
 };
 
 // 发送邮箱验证码
-const sendEmailVerifyCode = async (toEmail) => {
+exports.sendEmailVerifyCode = async (toEmail) => {
   try {
     const emailRegex =  /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(toEmail)) {
@@ -69,7 +69,7 @@ const sendEmailVerifyCode = async (toEmail) => {
 };
 
 // 邮箱验证是否有效
-const verifyEmailCode = (toEmail, inputCode) => {
+exports.verifyEmailCode = (toEmail, inputCode) => {
   // 检查是否发送验证码
   const codeInfo = emailCodeStore[toEmail];
 
@@ -104,8 +104,3 @@ const verifyEmailCode = (toEmail, inputCode) => {
     message: '验证码正确'
   }
 };
-
-module.exports = {
-  sendEmailVerifyCode,
-  verifyEmailCode
-}

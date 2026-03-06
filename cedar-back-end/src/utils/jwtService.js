@@ -8,7 +8,7 @@ const JWT_EXPIRES = process.env.JWT_EXPIRES;
  * @param {Object} payload - 存入 Token 数据
  * @returns {String} 生成的 Token 字符串
  */
-const generateToken = (email) => {
+exports.generateToken = (email) => {
   try {
     return jwt.sign(
       { email },
@@ -25,7 +25,7 @@ const generateToken = (email) => {
  * @param {String} token - 前端传入的 Token 字符串
  * @returns {Object} 校验结果 { success: boolean, data: 解析后的载荷 }
  */
-const verifyToken = (token) => {
+exports.verifyToken = (token) => {
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
     return {
@@ -45,9 +45,4 @@ const verifyToken = (token) => {
       data: message
     };
   }
-};
-
-module.exports = {
-  generateToken,
-  verifyToken
 };
