@@ -70,7 +70,7 @@ const handleInput = (e) => {
         :name="name"
         :value="modelValue"
         :placeholder="placeholder"
-        :autocomplete="type === 'password' ? 'new-password' : 'off'"
+        autocomplete="off"
         autocorrect="off"
         autocapitalize="off"
         spellcheck: false 
@@ -158,8 +158,8 @@ $input-height: 44px;
 
       // 悬浮样式(除不可以)
       &:hover:not(:disabled) {
-        color: darken($primary-color, 5%);
-        background: darken($primary-light, 3%)
+        color: $second-color;
+        background: $second-light;
       }
     }
   }
