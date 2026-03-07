@@ -3,7 +3,7 @@
  * @param {Number} timestamp - 毫秒时间戳
  * @return {String} 格式化后的时间字符串
  */
-const formatTime = (timestamp = Date.now()) => {
+exports.formatTime = (timestamp = Date.now()) => {
   const date = new Date(timestamp);
 
   // 补零函数
@@ -22,8 +22,4 @@ const formatTime = (timestamp = Date.now()) => {
   const second = padZero(date.getSeconds());
 
   return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
-};
-
-module.exports = {
-  formatTime
 };

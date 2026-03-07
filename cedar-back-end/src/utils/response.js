@@ -54,6 +54,5 @@ module.exports = {
   },
   serverError: (res, message, error) => {
     sendResponse(res, 500, message, null, error);
-    console.log(error)
   }
 };

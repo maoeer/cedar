@@ -2,6 +2,7 @@ import { ref } from 'vue';
 import { sendEmailCode } from '@/apis/emailApi';
 import { register } from '@/apis/userApi';
 import { showToast } from '@/components/Toast/toastPlugin';
+import { isEmailValid } from '@/utils/validate';
 
 /**
  * 注册专属逻辑
@@ -39,11 +40,16 @@ export const useRegister = ({ codeStore, userStore, router }) => {
     }
   };
 
-  // 注册表单校验（极简核心规则）
+  // 注册表单校验
   const validateRegister = () => {
     // 邮箱非空
     if (!form.value.email) {
       showToast('请输入邮箱');
+      return false;
+    }
+    // 邮箱格式是否合法
+    if (!isEmailValid(form.value.email)) {
+      showToast('邮箱格式错误');
       return false;
     }
     // 验证码非空
