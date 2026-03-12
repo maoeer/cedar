@@ -1,4 +1,4 @@
-import { ref } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import { sendEmailCode } from '@/apis/emailApi';
 import { login } from '@/apis/userApi';
 import { showToast } from '@/components/Toast/toastPlugin';
@@ -101,6 +101,7 @@ export const useLogin = ({ codeStore, userStore, router }) => {
 
       // 调用登录接口
       const res = await login(loginParams);
+      console.log(res)
       userStore.setUser(res);
       showToast('登录成功');
       router.push('/home');
@@ -114,6 +115,22 @@ export const useLogin = ({ codeStore, userStore, router }) => {
       loading.value = false;
     }
   };
+
+  // 监听回车键
+  const handleEnterKeyDown = (e) => {
+    if (e.keyCode === 13 && currentScene.value === LOGIN_SCENES.CODE) {
+      e.preventDefault();
+      handleLogin();
+    }
+  };
+
+  onMounted(() => {
+    document.addEventListener('keydown', handleEnterKeyDown);
+  });
+
+  onUnmounted(() => {
+    document.removeEventListener('keydown', handleEnterKeyDown);
+  });
 
   return {
     currentScene,

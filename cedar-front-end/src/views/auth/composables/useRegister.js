@@ -1,4 +1,4 @@
-import { ref } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import { sendEmailCode } from '@/apis/emailApi';
 import { register } from '@/apis/userApi';
 import { showToast } from '@/components/Toast/toastPlugin';
@@ -12,6 +12,9 @@ import { isEmailValid } from '@/utils/validate';
  * @param {Object} options.router 路由实例
  */
 export const useRegister = ({ codeStore, userStore, router }) => {
+  // 提交加载状态
+  const loading = ref(false);
+
   // 注册表单数据（固定字段，无动态逻辑）
   const form = ref({
     email: '',
@@ -19,8 +22,6 @@ export const useRegister = ({ codeStore, userStore, router }) => {
     password: '',
     confirmPassword: ''
   });
-  // 提交加载状态
-  const loading = ref(false);
 
   // 发送注册验证码
   const sendRegisterCode = async () => {
@@ -92,6 +93,22 @@ export const useRegister = ({ codeStore, userStore, router }) => {
       loading.value = false;
     }
   };
+
+  // 监听回车键
+  const handleEnterKeyDown = (e) => {
+    if (e.keyCode === 13) {
+      e.preventDefault();
+      handleRegister();
+    }
+  };
+
+  onMounted(() => {
+    document.addEventListener('keydown', handleEnterKeyDown);
+  });
+
+  onUnmounted(() => {
+    document.removeEventListener('keydown', handleEnterKeyDown);
+  });
 
   return {
     form,
