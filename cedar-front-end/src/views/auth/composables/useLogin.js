@@ -1,4 +1,4 @@
-import { ref } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import { sendEmailCode } from '@/apis/emailApi';
 import { login } from '@/apis/userApi';
 import { showToast } from '@/components/Toast/toastPlugin';
@@ -55,7 +55,7 @@ export const useLogin = ({ codeStore, userStore, router }) => {
       await sendEmailCode({ email: form.value.email, scene: LOGIN_SCENES.CODE });
       showToast('验证码发送成功');
     } catch (error) {
-      showToast(error.message || '验证码发送失败');
+      showToast(error.response.data.message || '验证码发送失败');
       codeStore.resetEmailCode();
     }
   };
@@ -101,6 +101,7 @@ export const useLogin = ({ codeStore, userStore, router }) => {
 
       // 调用登录接口
       const res = await login(loginParams);
+      console.log(res)
       userStore.setUser(res);
       showToast('登录成功');
       router.push('/home');
@@ -109,11 +110,27 @@ export const useLogin = ({ codeStore, userStore, router }) => {
       const errMsg = currentScene.value === LOGIN_SCENES.CODE
         ? '验证码错误或已过期'
         : '密码错误';
-      showToast(error.message || errMsg);
+      showToast(error.response.data.message || errMsg);
     } finally {
       loading.value = false;
     }
   };
+
+  // 监听回车键
+  const handleEnterKeyDown = (e) => {
+    if (e.keyCode === 13 && currentScene.value === LOGIN_SCENES.CODE) {
+      e.preventDefault();
+      handleLogin();
+    }
+  };
+
+  onMounted(() => {
+    document.addEventListener('keydown', handleEnterKeyDown);
+  });
+
+  onUnmounted(() => {
+    document.removeEventListener('keydown', handleEnterKeyDown);
+  });
 
   return {
     currentScene,

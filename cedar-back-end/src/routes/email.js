@@ -1,8 +1,8 @@
 const express = require('express');
-const { sendEmailVerifyCode, verifyEmailCode } = require('../utils/emailService');
-const { generateToken } = require('../utils/jwtService.js');
+const { sendEmailVerifyCode } = require('../utils/emailService');
 const { success, clientError, serverError } = require('../utils/response');
 const { db } = require('../db/index');
+const { isEmailValid } = require('../utils/validate');
 
 const router = express.Router();
 
@@ -20,6 +20,11 @@ router.post('/get-code', async (req, res) => {
       return clientError(res, '请传入邮箱地址');
     }
 
+    // 邮箱格式校验
+    if (!isEmailValid(email)) {
+      return clientError(res, '请传入有效的邮箱地址');
+    }
+
     // 查询邮箱是否已注册
     await db.read();
     const users = db.data?.users || [];
@@ -32,11 +37,11 @@ router.post('/get-code', async (req, res) => {
       }
     } else {
       // login/forget 场景：邮箱必须已经注册
-       if (!existingUser) {
+      if (!existingUser) {
         return clientError(res, '该邮箱尚未注册');
       }
     }
-    
+
     // 发送验证码
     const result = await sendEmailVerifyCode(email);
 

@@ -1,4 +1,5 @@
 import request from '@/utils/request';
+import { isEmailValid } from '@/utils/validate'
 
 // 发送邮箱
 export const sendEmailCode = async ({ email, scene }) => {
@@ -7,15 +8,12 @@ export const sendEmailCode = async ({ email, scene }) => {
   }
 
   // 邮箱格式
-  const emailReg = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  if (!emailReg.test(email)) {
+  if (!isEmailValid(email)) {
     throw new Error('邮箱格式错误');
   }
 
   try {
-    const res = await request.post('/email/get-code', { email, scene });
-    console.log(res);
-    return res;
+    await request.post('/email/get-code', { email, scene });
   } catch (error) {
     throw error;
   }
