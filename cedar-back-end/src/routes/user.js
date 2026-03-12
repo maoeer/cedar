@@ -73,7 +73,7 @@ router.post('/login', async (req, res) => {
       }
 
       // 校验验证码正确性
-      const codeVerifyResult = verifyEmailCode(email, verifyCode);
+      const codeVerifyResult = verifyEmailCode(email, code);
       if (!codeVerifyResult.success) {
         return clientError(res, codeVerifyResult.message);
       }
@@ -116,13 +116,11 @@ router.post('/register', async (req, res) => {
     }
 
     // 邮箱格式校验
-    const emailReg = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (!emailReg.test(email)) {
-      return clientError(res, '请输入有效的邮箱地址');
+    if (!isEmailValid(email)) {
+      return clientError(res, '请传入有效的邮箱地址');
     }
-    // 验证码格式校验（6位数字）
-    const verifyCode = String(code).trim();
-    if (!/^\d{6}$/.test(verifyCode)) {
+    // 验证码格式校验
+    if (!isCodeValid(code)) {
       return clientError(res, '请传入6位数字验证码');
     }
     // 密码长度校验
@@ -135,7 +133,7 @@ router.post('/register', async (req, res) => {
     }
 
     // 校验验证码是否有效
-    const codeVerifyResult = verifyEmailCode(email, verifyCode);
+    const codeVerifyResult = verifyEmailCode(email, code);
     if (!codeVerifyResult.success) {
       return clientError(res, codeVerifyResult.message);
     }

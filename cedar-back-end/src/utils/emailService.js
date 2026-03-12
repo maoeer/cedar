@@ -1,4 +1,5 @@
 const nodemailer = require('nodemailer');
+const { isEmailValid } = require('./validate');
 
 // 存储验证码
 // 结构：{ toEmail: { code: 验证码（string）, expire: 过期时间（number） } }
@@ -23,8 +24,7 @@ const generateVerifyCode = () => {
 // 发送邮箱验证码
 exports.sendEmailVerifyCode = async (toEmail) => {
   try {
-    const emailRegex =  /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(toEmail)) {
+    if (!isEmailValid(toEmail)) {
       return {
         success: false,
         message: '邮箱格式不正确'
@@ -98,9 +98,18 @@ exports.verifyEmailCode = (toEmail, inputCode) => {
   }
 
   // 验证码通过
-  delete emailCodeStore[toEmail];
+  if (codeInfo.code === inputCode) {
+    // 删除验证码
+    delete emailCodeStore[toEmail];
+
+    return {
+      success: true,
+      message: '验证码正确'
+    }
+  }
+
   return {
-    success: true,
-    message: '验证码正确'
+    success: false,
+    message: '未知错误'
   }
 };
