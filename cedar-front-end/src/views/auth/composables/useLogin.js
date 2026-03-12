@@ -55,7 +55,7 @@ export const useLogin = ({ codeStore, userStore, router }) => {
       await sendEmailCode({ email: form.value.email, scene: LOGIN_SCENES.CODE });
       showToast('验证码发送成功');
     } catch (error) {
-      showToast(error.message || '验证码发送失败');
+      showToast(error.response.data.message || '验证码发送失败');
       codeStore.resetEmailCode();
     }
   };
@@ -109,7 +109,7 @@ export const useLogin = ({ codeStore, userStore, router }) => {
       const errMsg = currentScene.value === LOGIN_SCENES.CODE
         ? '验证码错误或已过期'
         : '密码错误';
-      showToast(error.message || errMsg);
+      showToast(error.response.data.message || errMsg);
     } finally {
       loading.value = false;
     }

@@ -35,7 +35,7 @@ export const useRegister = ({ codeStore, userStore, router }) => {
       await sendEmailCode({ email: form.value.email, scene: 'register' });
       showToast('验证码发送成功');
     } catch (error) {
-      showToast(error.message || '验证码发送失败');
+      showToast(error.response.data.message || '验证码发送失败');
       codeStore.resetEmailCode();
     }
   };
@@ -87,7 +87,7 @@ export const useRegister = ({ codeStore, userStore, router }) => {
       showToast('注册成功');
       router.push('/auth/login'); // 跳转到登录页
     } catch (error) {
-      showToast(error.message || '注册失败');
+      showToast(error.response.data.message || '注册失败');
     } finally {
       loading.value = false;
     }

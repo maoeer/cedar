@@ -5,6 +5,7 @@ const { db, generateID } = require('../db/index');
 const { verifyEmailCode } = require('../utils/emailService');
 const { generateToken } = require('../utils/jwtService');
 const { encryptPassword, verifyPassword } = require('../utils/crypto');
+const { isEmailValid, isCodeValid } = require('../utils/validate');
 
 // 创建路由实例
 const router = express.Router();
@@ -36,8 +37,8 @@ router.post('/login', async (req, res) => {
     if (!email) {
       return clientError(res, '请传入登录邮箱');
     }
-    const emailReg = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (!emailReg.test(email)) {
+    // 校验邮箱格式
+    if (!isEmailValid(email)) {
       return clientError(res, '请传入有效的邮箱地址');
     }
 
@@ -67,8 +68,7 @@ router.post('/login', async (req, res) => {
       }
 
       // 验证码格式校验
-      const verifyCode = String(code).trim();
-      if (!/^\d{6}$/.test(verifyCode)) {
+      if (!isCodeValid(code)) {
         return clientError(res, '请传入6位数字验证码');
       }
 
